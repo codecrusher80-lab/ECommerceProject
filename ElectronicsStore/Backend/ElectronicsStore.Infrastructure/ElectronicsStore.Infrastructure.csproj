@@ -18,11 +18,12 @@
     <PackageReference Include="Hangfire.SqlServer" Version="1.8.14" />
     <PackageReference Include="Microsoft.AspNetCore.SignalR.Core" Version="1.1.0" />
     <PackageReference Include="MailKit" Version="4.7.1.1" />
-    <PackageReference Include="Razorpay" Version="4.2.1" />
+    <PackageReference Include="Razorpay" Version="3.3.0-final-nuget-pack" />
     <PackageReference Include="Serilog.Extensions.Logging" Version="8.0.0" />
     <PackageReference Include="Serilog.Sinks.File" Version="6.0.0" />
     <PackageReference Include="StackExchange.Redis" Version="2.8.0" />
-    <PackageReference Include="AutoMapper" Version="13.0.1" />
+    <PackageReference Include="AutoMapper" Version="12.0.1" />
+    <PackageReference Include="SixLabors.ImageSharp" Version="3.1.6" />
   </ItemGroup>
 
   <ItemGroup>

@@ -5,6 +5,12 @@ namespace ElectronicsStore.Core.DTOs.Analytics
         public decimal TotalRevenue { get; set; }
         public int TotalOrders { get; set; }
         public int TotalCustomers { get; set; }
+        
+        /// <summary>
+        /// Alias for TotalCustomers for backward compatibility
+        /// </summary>
+        public int TotalUsers => TotalCustomers;
+        
         public int TotalProducts { get; set; }
         public decimal AverageOrderValue { get; set; }
         public decimal RevenueGrowth { get; set; }
@@ -12,6 +18,15 @@ namespace ElectronicsStore.Core.DTOs.Analytics
         public decimal CustomerGrowth { get; set; }
         public int LowStockProducts { get; set; }
         public int PendingOrders { get; set; }
+        
+        // Today's specific metrics
+        public int TodayOrders { get; set; }
+        public decimal TodayRevenue { get; set; }
+        public int TodayUsers { get; set; }
+        public int TodayProducts { get; set; }
+        public decimal MonthlyRevenue { get; set; }
+        public int MonthlyOrders { get; set; }
+        public int MonthlyUsers { get; set; }
     }
 
     public class SalesAnalyticsDto

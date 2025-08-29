@@ -4,6 +4,7 @@ namespace ElectronicsStore.Core.Interfaces.Repositories
 {
     public interface IUnitOfWork : IDisposable
     {
+        IGenericRepository<User> Users { get; }
         IGenericRepository<Category> Categories { get; }
         IGenericRepository<Brand> Brands { get; }
         IProductRepository Products { get; }

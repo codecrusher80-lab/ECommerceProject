@@ -190,5 +190,40 @@ namespace ElectronicsStore.Core.DTOs.User
         /// Search query for general text search across multiple fields
         /// </summary>
         public string? SearchQuery { get; set; }
+
+        /// <summary>
+        /// General search term (alias for SearchQuery for backward compatibility)
+        /// </summary>
+        public string? SearchTerm { get; set; }
+
+        /// <summary>
+        /// Filter by active/inactive status
+        /// </summary>
+        public bool? IsActive { get; set; }
+
+        /// <summary>
+        /// Filter from date (alias for RegistrationDateFrom)
+        /// </summary>
+        public DateTime? FromDate { get; set; }
+
+        /// <summary>
+        /// Filter to date (alias for RegistrationDateTo)
+        /// </summary>
+        public DateTime? ToDate { get; set; }
+
+        /// <summary>
+        /// Sort in descending order
+        /// </summary>
+        public bool SortDescending { get; set; } = true;
+
+        /// <summary>
+        /// Page number for pagination
+        /// </summary>
+        public int PageNumber { get; set; } = 1;
+
+        /// <summary>
+        /// Page size for pagination
+        /// </summary>
+        public int PageSize { get; set; } = 10;
     }
 }

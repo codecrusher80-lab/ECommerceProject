@@ -22,6 +22,12 @@ namespace ElectronicsStore.Core.DTOs.Common
     {
         public List<T> Items { get; set; } = new();
         public int TotalCount { get; set; }
+        
+        /// <summary>
+        /// Alias for TotalCount for backward compatibility
+        /// </summary>
+        public int TotalItems => TotalCount;
+        
         public int PageNumber { get; set; }
         public int PageSize { get; set; }
         public int TotalPages => (int)Math.Ceiling(TotalCount / (double)PageSize);

@@ -1,0 +1,13 @@
+/home/user/webapp/ElectronicsStore/Backend/ElectronicsStore.Core/obj/Debug/net8.0/ElectronicsStore.Core.csproj.AssemblyReference.cache
+/home/user/webapp/ElectronicsStore/Backend/ElectronicsStore.Core/obj/Debug/net8.0/ElectronicsStore.Core.GeneratedMSBuildEditorConfig.editorconfig
+/home/user/webapp/ElectronicsStore/Backend/ElectronicsStore.Core/obj/Debug/net8.0/ElectronicsStore.Core.AssemblyInfoInputs.cache
+/home/user/webapp/ElectronicsStore/Backend/ElectronicsStore.Core/obj/Debug/net8.0/ElectronicsStore.Core.AssemblyInfo.cs
+/home/user/webapp/ElectronicsStore/Backend/ElectronicsStore.Core/obj/Debug/net8.0/ElectronicsStore.Core.csproj.CoreCompileInputs.cache
+/home/user/webapp/ElectronicsStore/Backend/ElectronicsStore.Core/obj/Debug/net8.0/ElectronicsStore.Core.sourcelink.json
+/home/user/webapp/ElectronicsStore/Backend/ElectronicsStore.Core/bin/Debug/net8.0/ElectronicsStore.Core.deps.json
+/home/user/webapp/ElectronicsStore/Backend/ElectronicsStore.Core/bin/Debug/net8.0/ElectronicsStore.Core.dll
+/home/user/webapp/ElectronicsStore/Backend/ElectronicsStore.Core/bin/Debug/net8.0/ElectronicsStore.Core.pdb
+/home/user/webapp/ElectronicsStore/Backend/ElectronicsStore.Core/obj/Debug/net8.0/ElectronicsStore.Core.dll
+/home/user/webapp/ElectronicsStore/Backend/ElectronicsStore.Core/obj/Debug/net8.0/refint/ElectronicsStore.Core.dll
+/home/user/webapp/ElectronicsStore/Backend/ElectronicsStore.Core/obj/Debug/net8.0/ElectronicsStore.Core.pdb
+/home/user/webapp/ElectronicsStore/Backend/ElectronicsStore.Core/obj/Debug/net8.0/ref/ElectronicsStore.Core.dll

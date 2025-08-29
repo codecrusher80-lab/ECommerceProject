@@ -21,5 +21,10 @@ namespace ElectronicsStore.Core.Interfaces.Repositories
         Task<int> CountAsync();
         Task<int> CountAsync(Expression<Func<T, bool>> predicate);
         Task<bool> ExistsAsync(Expression<Func<T, bool>> predicate);
+        
+        /// <summary>
+        /// Gets a queryable interface for advanced queries
+        /// </summary>
+        IQueryable<T> Query();
     }
 }

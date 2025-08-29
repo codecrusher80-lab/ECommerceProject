@@ -1,0 +1,6 @@
+/home/user/webapp/ElectronicsStore/Backend/ElectronicsStore.Infrastructure/obj/Debug/net8.0/ElectronicsStore.Infrastructure.csproj.AssemblyReference.cache
+/home/user/webapp/ElectronicsStore/Backend/ElectronicsStore.Infrastructure/obj/Debug/net8.0/ElectronicsStore.Infrastructure.GeneratedMSBuildEditorConfig.editorconfig
+/home/user/webapp/ElectronicsStore/Backend/ElectronicsStore.Infrastructure/obj/Debug/net8.0/ElectronicsStore.Infrastructure.AssemblyInfoInputs.cache
+/home/user/webapp/ElectronicsStore/Backend/ElectronicsStore.Infrastructure/obj/Debug/net8.0/ElectronicsStore.Infrastructure.AssemblyInfo.cs
+/home/user/webapp/ElectronicsStore/Backend/ElectronicsStore.Infrastructure/obj/Debug/net8.0/ElectronicsStore.Infrastructure.csproj.CoreCompileInputs.cache
+/home/user/webapp/ElectronicsStore/Backend/ElectronicsStore.Infrastructure/obj/Debug/net8.0/ElectronicsStore.Infrastructure.sourcelink.json

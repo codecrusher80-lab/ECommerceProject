@@ -124,5 +124,15 @@ namespace ElectronicsStore.Core.DTOs.Product
         public bool? IsFeatured { get; set; }
         public List<string>? Colors { get; set; }
         public List<string>? Sizes { get; set; }
+        
+        /// <summary>
+        /// Maximum stock level for filtering low stock products
+        /// </summary>
+        public int? MaxStock { get; set; }
+        
+        /// <summary>
+        /// Minimum stock level
+        /// </summary>
+        public int? MinStock { get; set; }
     }
 }

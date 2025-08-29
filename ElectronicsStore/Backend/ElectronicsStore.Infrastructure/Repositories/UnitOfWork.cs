@@ -10,6 +10,7 @@ namespace ElectronicsStore.Infrastructure.Repositories
         private readonly ApplicationDbContext _context;
         private IDbContextTransaction? _transaction;
 
+        private IGenericRepository<User>? _users;
         private IGenericRepository<Category>? _categories;
         private IGenericRepository<Brand>? _brands;
         private IProductRepository? _products;
@@ -29,6 +30,9 @@ namespace ElectronicsStore.Infrastructure.Repositories
         {
             _context = context;
         }
+
+        public IGenericRepository<User> Users =>
+            _users ??= new GenericRepository<User>(_context);
 
         public IGenericRepository<Category> Categories =>
             _categories ??= new GenericRepository<Category>(_context);

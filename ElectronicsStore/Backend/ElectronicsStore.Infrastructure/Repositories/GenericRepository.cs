@@ -136,6 +136,11 @@ namespace ElectronicsStore.Infrastructure.Repositories
             return await _dbSet.AnyAsync(predicate);
         }
 
+        public virtual IQueryable<T> Query()
+        {
+            return _dbSet.AsQueryable();
+        }
+
         protected virtual Expression<Func<T, object>> GetSortExpression(string sortBy)
         {
             // Default sort by Id if available

@@ -23,7 +23,9 @@ namespace ElectronicsStore.Infrastructure.Data
         public DbSet<OrderStatusHistory> OrderStatusHistories { get; set; }
         public DbSet<Review> Reviews { get; set; }
         public DbSet<Coupon> Coupons { get; set; }
+        public DbSet<CouponUsage> CouponUsages { get; set; }
         public DbSet<Notification> Notifications { get; set; }
+        public DbSet<Payment> Payments { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -217,6 +219,16 @@ namespace ElectronicsStore.Infrastructure.Data
                       .HasForeignKey(o => o.AddressId)
                       .OnDelete(DeleteBehavior.SetNull);
 
+                entity.HasOne(o => o.ShippingAddress)
+                      .WithMany()
+                      .HasForeignKey(o => o.ShippingAddressId)
+                      .OnDelete(DeleteBehavior.SetNull);
+
+                entity.HasOne(o => o.BillingAddress)
+                      .WithMany()
+                      .HasForeignKey(o => o.BillingAddressId)
+                      .OnDelete(DeleteBehavior.SetNull);
+
                 entity.HasOne(o => o.Coupon)
                       .WithMany(c => c.Orders)
                       .HasForeignKey(o => o.CouponId)
@@ -302,6 +314,30 @@ namespace ElectronicsStore.Infrastructure.Data
                 entity.HasQueryFilter(c => !c.IsDeleted);
             });
 
+            // CouponUsage Configuration
+            modelBuilder.Entity<CouponUsage>(entity =>
+            {
+                entity.Property(cu => cu.DiscountAmount).HasColumnType("decimal(18,2)").IsRequired();
+
+                entity.HasOne(cu => cu.Coupon)
+                      .WithMany(c => c.CouponUsages)
+                      .HasForeignKey(cu => cu.CouponId)
+                      .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasOne(cu => cu.User)
+                      .WithMany()
+                      .HasForeignKey(cu => cu.UserId)
+                      .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(cu => cu.Order)
+                      .WithMany()
+                      .HasForeignKey(cu => cu.OrderId)
+                      .OnDelete(DeleteBehavior.Cascade);
+
+                // Soft delete filter
+                entity.HasQueryFilter(cu => !cu.IsDeleted);
+            });
+
             // Notification Configuration
             modelBuilder.Entity<Notification>(entity =>
             {
@@ -317,35 +353,28 @@ namespace ElectronicsStore.Infrastructure.Data
                 entity.HasQueryFilter(n => !n.IsDeleted);
             });
 
-            // Seed Data
-            SeedData(modelBuilder);
-        }
+            // Payment Configuration
+            modelBuilder.Entity<Payment>(entity =>
+            {
+                entity.Property(p => p.Amount).HasColumnType("decimal(18,2)").IsRequired();
+                entity.Property(p => p.FeeAmount).HasColumnType("decimal(18,2)");
+                entity.Property(p => p.NetAmount).HasColumnType("decimal(18,2)");
+                entity.Property(p => p.RefundedAmount).HasColumnType("decimal(18,2)");
 
-        private static void SeedData(ModelBuilder modelBuilder)
-        {
-            // Seed Categories
-            modelBuilder.Entity<Category>().HasData(
-                new Category { Id = 1, Name = "Smartphones", Description = "Latest smartphones and mobile devices", IsActive = true, CreatedAt = DateTime.UtcNow },
-                new Category { Id = 2, Name = "Laptops", Description = "Laptops and notebooks", IsActive = true, CreatedAt = DateTime.UtcNow },
-                new Category { Id = 3, Name = "Tablets", Description = "Tablets and iPads", IsActive = true, CreatedAt = DateTime.UtcNow },
-                new Category { Id = 4, Name = "Audio", Description = "Headphones, speakers and audio devices", IsActive = true, CreatedAt = DateTime.UtcNow },
-                new Category { Id = 5, Name = "Gaming", Description = "Gaming consoles and accessories", IsActive = true, CreatedAt = DateTime.UtcNow },
-                new Category { Id = 6, Name = "Smart Home", Description = "Smart home devices and IoT products", IsActive = true, CreatedAt = DateTime.UtcNow },
-                new Category { Id = 7, Name = "Cameras", Description = "Digital cameras and photography equipment", IsActive = true, CreatedAt = DateTime.UtcNow },
-                new Category { Id = 8, Name = "Wearables", Description = "Smartwatches and fitness trackers", IsActive = true, CreatedAt = DateTime.UtcNow }
-            );
+                entity.HasOne(p => p.Order)
+                      .WithMany(o => o.Payments)
+                      .HasForeignKey(p => p.OrderId)
+                      .OnDelete(DeleteBehavior.Cascade);
 
-            // Seed Brands
-            modelBuilder.Entity<Brand>().HasData(
-                new Brand { Id = 1, Name = "Apple", Description = "Premium technology products", IsActive = true, CreatedAt = DateTime.UtcNow },
-                new Brand { Id = 2, Name = "Samsung", Description = "Innovative electronic devices", IsActive = true, CreatedAt = DateTime.UtcNow },
-                new Brand { Id = 3, Name = "Google", Description = "Smart devices and AI technology", IsActive = true, CreatedAt = DateTime.UtcNow },
-                new Brand { Id = 4, Name = "Sony", Description = "Entertainment and technology", IsActive = true, CreatedAt = DateTime.UtcNow },
-                new Brand { Id = 5, Name = "Microsoft", Description = "Software and computing devices", IsActive = true, CreatedAt = DateTime.UtcNow },
-                new Brand { Id = 6, Name = "Dell", Description = "Personal computers and laptops", IsActive = true, CreatedAt = DateTime.UtcNow },
-                new Brand { Id = 7, Name = "HP", Description = "Computing and printing solutions", IsActive = true, CreatedAt = DateTime.UtcNow },
-                new Brand { Id = 8, Name = "Xiaomi", Description = "Smart devices for everyone", IsActive = true, CreatedAt = DateTime.UtcNow }
-            );
+                entity.HasOne(p => p.User)
+                      .WithMany()
+                      .HasForeignKey(p => p.UserId)
+                      .OnDelete(DeleteBehavior.Restrict);
+
+                // Soft delete filter
+                entity.HasQueryFilter(p => !p.IsDeleted);
+            });
+
         }
 
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)

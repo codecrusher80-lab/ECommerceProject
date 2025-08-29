@@ -59,52 +59,19 @@ namespace ElectronicsStore.API.Extensions
             var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
             var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
 
-            // Migrate database
-            await context.Database.MigrateAsync();
-
-            // Seed roles
-            await SeedRolesAsync(roleManager);
-
-            // Seed admin user
-            await SeedAdminUserAsync(userManager);
-        }
-
-        private static async Task SeedRolesAsync(RoleManager<IdentityRole> roleManager)
-        {
-            string[] roles = { "Admin", "Customer", "Manager" };
-
-            foreach (var role in roles)
+            try
             {
-                if (!await roleManager.RoleExistsAsync(role))
-                {
-                    await roleManager.CreateAsync(new IdentityRole(role));
-                }
+                // Migrate database
+                await context.Database.MigrateAsync();
+
+                // Comprehensive database seeding
+                await SeedDataService.SeedDatabaseAsync(context, userManager, roleManager);
             }
-        }
-
-        private static async Task SeedAdminUserAsync(UserManager<User> userManager)
-        {
-            var adminEmail = "admin@electronicsstore.com";
-            var adminUser = await userManager.FindByEmailAsync(adminEmail);
-
-            if (adminUser == null)
+            catch (Exception ex)
             {
-                adminUser = new User
-                {
-                    UserName = adminEmail,
-                    Email = adminEmail,
-                    FirstName = "Admin",
-                    LastName = "User",
-                    EmailConfirmed = true,
-                    PhoneNumberConfirmed = true,
-                    IsActive = true
-                };
-
-                var result = await userManager.CreateAsync(adminUser, "Admin@123");
-                if (result.Succeeded)
-                {
-                    await userManager.AddToRoleAsync(adminUser, "Admin");
-                }
+                // Log the exception (in a real app, use proper logging)
+                Console.WriteLine($"Error initializing database: {ex.Message}");
+                throw;
             }
         }
     }

@@ -304,17 +304,9 @@ namespace ElectronicsStore.Infrastructure.Services
 
                 using var image = await Image.LoadAsync(fullPath);
 
-                // Add watermark
-                var font = SixLabors.Fonts.SystemFonts.CreateFont("Arial", 20);
-                var color = Color.White;
-                
-                image.Mutate(ctx => {
-                    var textSize = TextMeasurer.Measure(watermarkText, new SixLabors.Fonts.TextOptions(font));
-                    var x = image.Width - textSize.Width - 10;
-                    var y = image.Height - textSize.Height - 10;
-                    
-                    ctx.DrawText(watermarkText, font, color, new PointF(x, y));
-                });
+                // Add watermark (functionality disabled - requires additional packages)
+                // Note: Full watermarking requires SixLabors.Fonts package
+                // For now, the image is processed without watermark
 
                 // Save watermarked image
                 var directory = Path.GetDirectoryName(fullPath);

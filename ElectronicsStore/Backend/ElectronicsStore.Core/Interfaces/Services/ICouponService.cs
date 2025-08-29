@@ -15,5 +15,6 @@ namespace ElectronicsStore.Core.Interfaces.Services
         Task<ApiResponse<IEnumerable<CouponDto>>> GetActiveCouponsAsync();
         Task<ApiResponse> DeactivateCouponAsync(int couponId);
         Task<ApiResponse> ActivateCouponAsync(int couponId);
+        Task<ApiResponse> UseCouponAsync(string couponCode, string userId, decimal orderAmount);
     }
 }

@@ -67,6 +67,9 @@ namespace ElectronicsStore.Core.Entities
         
         // Additional properties for mapping compatibility
         public string? ImageUrl => ProductImages?.FirstOrDefault()?.ImageUrl;
+        
+        // Alias for service compatibility
+        public virtual ICollection<ProductImage> Images => ProductImages;
         public virtual ICollection<CartItem> CartItems { get; set; } = new List<CartItem>();
         public virtual ICollection<WishlistItem> WishlistItems { get; set; } = new List<WishlistItem>();
         public virtual ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();

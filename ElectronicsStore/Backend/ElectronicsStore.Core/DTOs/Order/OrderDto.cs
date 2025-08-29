@@ -43,6 +43,10 @@ namespace ElectronicsStore.Core.DTOs.Order
         public string? CouponCode { get; set; }
         public string? Notes { get; set; }
         public List<CreateOrderItemDto> Items { get; set; } = new();
+        
+        // Additional properties for service compatibility
+        public ShippingAddressDto? ShippingAddress { get; set; }
+        public ShippingAddressDto? BillingAddress { get; set; }
     }
 
     public class OrderItemDto
@@ -80,6 +84,10 @@ namespace ElectronicsStore.Core.DTOs.Order
 
         public string? Notes { get; set; }
         public string? TrackingNumber { get; set; }
+        
+        // Additional properties for service compatibility
+        public string? Comments { get; set; }
+        public string? UpdatedBy { get; set; }
     }
 
     public class OrderStatusHistoryDto

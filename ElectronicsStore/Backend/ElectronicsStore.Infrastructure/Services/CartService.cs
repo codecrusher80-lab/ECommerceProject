@@ -272,7 +272,7 @@ namespace ElectronicsStore.Infrastructure.Services
                     return cartSummary;
                 }
 
-                var validateCouponDto = new DTOs.Coupon.ValidateCouponDto
+                var validateCouponDto = new Core.DTOs.Coupon.ValidateCouponDto
                 {
                     Code = couponCode,
                     OrderAmount = cartSummary.Data.SubTotal,

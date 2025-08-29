@@ -15,5 +15,6 @@ namespace ElectronicsStore.Core.Interfaces.Services
         Task<ApiResponse<int>> GetUnreadCountAsync(string userId);
         Task SendRealTimeNotificationAsync(string userId, NotificationDto notification);
         Task SendBulkNotificationAsync(List<string> userIds, CreateNotificationDto notification);
+        Task SendOrderStatusNotificationAsync(string userId, int orderId, string orderStatus, string message);
     }
 }

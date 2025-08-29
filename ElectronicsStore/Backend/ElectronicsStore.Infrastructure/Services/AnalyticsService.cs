@@ -355,7 +355,7 @@ namespace ElectronicsStore.Infrastructure.Services
 
                 var averageProcessingTime = orders
                     .Where(o => o.Status == Core.Enums.OrderStatus.Delivered)
-                    .Select(o => (o.UpdatedAt - o.CreatedAt).TotalHours)
+                    .Select(o => (o.UpdatedAt - o.CreatedAt)?.TotalHours ?? 0)
                     .DefaultIfEmpty(0)
                     .Average();
 
@@ -367,8 +367,13 @@ namespace ElectronicsStore.Infrastructure.Services
                     CompletedOrders = orders.Count(o => o.Status == Core.Enums.OrderStatus.Delivered),
                     PendingOrders = orders.Count(o => o.Status == Core.Enums.OrderStatus.Pending),
                     CancelledOrders = orders.Count(o => o.Status == Core.Enums.OrderStatus.Cancelled),
-                    StatusDistribution = statusDistribution,
-                    PaymentMethodDistribution = paymentMethodDistribution,
+                    StatusDistribution = statusDistribution.Select(kvp => new OrderStatusDto
+                    {
+                        Status = kvp.Key,
+                        Count = kvp.Value,
+                        Percentage = (decimal)kvp.Value / orders.Count * 100
+                    }).ToList(),
+                    PaymentMethodDistribution = paymentMethodDistribution.ToDictionary(kvp => kvp.Key.ToString(), kvp => kvp.Value),
                     AverageProcessingTimeHours = averageProcessingTime
                 };
 
@@ -431,7 +436,7 @@ namespace ElectronicsStore.Infrastructure.Services
                     TotalReviews = product.Reviews.Count,
                     WishlistCount = product.WishlistItems.Count,
                     MonthlySales = monthlyData,
-                    ConversionRate = product.ViewCount > 0 ? (double)totalOrders / product.ViewCount * 100 : 0
+                    ConversionRate = product.ViewCount > 0 ? (decimal)((double)totalOrders / product.ViewCount * 100) : 0
                 };
 
                 return ApiResponse<ProductAnalyticsDto>.SuccessResponse(analytics);

@@ -60,5 +60,13 @@ namespace ElectronicsStore.Core.DTOs.Analytics
         public string? UserEmail { get; set; }
 
         public string? UserName { get; set; }
+        
+        // Additional properties for service compatibility
+        public int NewUsers { get; set; }
+        public int ActiveUsers { get; set; }
+        public DateTime Date { get; set; }
+        public int TotalSessions { get; set; }
+        public double AverageSessionDuration { get; set; }
+        public int PageViews { get; set; }
     }
 }

@@ -7,7 +7,7 @@ namespace ElectronicsStore.Core.Entities
     public class Refund : BaseEntity
     {
         [Required]
-        public Guid PaymentId { get; set; }
+        public int PaymentId { get; set; }
         
         [Required]
         public int OrderId { get; set; }
@@ -21,13 +21,16 @@ namespace ElectronicsStore.Core.Entities
         public string Currency { get; set; } = "USD";
         
         [Required]
-        public PaymentStatus Status { get; set; }
+        public RefundStatus Status { get; set; }
         
         [StringLength(200)]
         public string? RefundTransactionId { get; set; }
         
         [StringLength(200)]
         public string? GatewayRefundId { get; set; }
+        
+        [StringLength(200)]
+        public string? RazorpayRefundId { get; set; }
         
         [StringLength(500)]
         public string? Reason { get; set; }

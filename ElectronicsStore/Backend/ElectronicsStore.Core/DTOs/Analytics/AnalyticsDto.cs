@@ -135,6 +135,7 @@ namespace ElectronicsStore.Core.DTOs.Analytics
         public DateTime FromDate { get; set; }
         public DateTime ToDate { get; set; }
         public Dictionary<string, int> PaymentMethodDistribution { get; set; } = new();
+        public double AverageProcessingTimeHours { get; set; }
     }
 
     public class OrderStatusDto
@@ -158,5 +159,30 @@ namespace ElectronicsStore.Core.DTOs.Analytics
         public double AverageRating { get; set; }
         public int ReviewCount { get; set; }
         public List<DailySalesDto> SalesHistory { get; set; } = new();
+        
+        // Additional properties for service compatibility
+        public decimal TotalSales { get; set; }
+        public int TotalQuantitySold { get; set; }
+        public int TotalOrders { get; set; }
+        public int CurrentStock { get; set; }
+        public int TotalReviews { get; set; }
+        public int WishlistCount { get; set; }
+        public List<ProductMonthlySalesDto> MonthlySales { get; set; } = new();
+    }
+
+    public class ProductMonthlySalesDto
+    {
+        public int ProductId { get; set; }
+        public string ProductName { get; set; } = string.Empty;
+        public int Year { get; set; }
+        public int Month { get; set; }
+        public string MonthName { get; set; } = string.Empty;
+        public int QuantitySold { get; set; }
+        public decimal Revenue { get; set; }
+        public int OrderCount { get; set; }
+        
+        // Additional properties for service compatibility
+        public decimal Sales { get; set; }
+        public int Quantity { get; set; }
     }
 }

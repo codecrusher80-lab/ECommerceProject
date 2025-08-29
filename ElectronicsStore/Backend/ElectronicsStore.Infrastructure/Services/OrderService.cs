@@ -34,7 +34,7 @@ namespace ElectronicsStore.Infrastructure.Services
         {
             try
             {
-                var query = _unitOfWork.Orders.Query()
+                IQueryable<Order> query = _unitOfWork.Orders.Query()
                     .Include(o => o.OrderItems)
                     .ThenInclude(oi => oi.Product)
                     .Include(o => o.User)
@@ -105,7 +105,7 @@ namespace ElectronicsStore.Infrastructure.Services
         {
             try
             {
-                var query = _unitOfWork.Orders.Query()
+                IQueryable<Order> query = _unitOfWork.Orders.Query()
                     .Include(o => o.OrderItems)
                     .ThenInclude(oi => oi.Product)
                     .ThenInclude(p => p.Images)
@@ -113,7 +113,7 @@ namespace ElectronicsStore.Infrastructure.Services
                     .Include(o => o.ShippingAddress)
                     .Include(o => o.BillingAddress)
                     .Include(o => o.StatusHistory)
-                    .Include(o => o.Payment);
+                    .Include(o => o.Payments);
 
                 if (!string.IsNullOrEmpty(userId))
                     query = query.Where(o => o.UserId == userId);
@@ -192,7 +192,7 @@ namespace ElectronicsStore.Infrastructure.Services
                     UserId = userId,
                     OrderNumber = orderNumber,
                     Status = Core.Enums.OrderStatus.Pending,
-                    SubtotalAmount = subtotal,
+                    SubTotal = subtotal,
                     TaxAmount = taxAmount,
                     ShippingAmount = shippingAmount,
                     DiscountAmount = discountAmount,
@@ -266,9 +266,9 @@ namespace ElectronicsStore.Infrastructure.Services
                 }
 
                 // Use coupon
-                if (couponId.HasValue)
+                if (!string.IsNullOrEmpty(createOrderDto.CouponCode))
                 {
-                    await _couponService.UseCouponAsync(couponId.Value, userId, order.Id);
+                    await _couponService.UseCouponAsync(createOrderDto.CouponCode, userId, order.TotalAmount);
                 }
 
                 // Clear cart
@@ -287,7 +287,7 @@ namespace ElectronicsStore.Infrastructure.Services
                 await _unitOfWork.SaveChangesAsync();
 
                 // Send order confirmation notification
-                await _notificationService.SendOrderStatusNotificationAsync(userId, orderNumber, Core.Enums.OrderStatus.Pending);
+                await _notificationService.SendOrderStatusNotificationAsync(userId, order.Id, Core.Enums.OrderStatus.Pending.ToString(), "Your order has been placed successfully!");
 
                 // Send order confirmation email
                 var user = await _unitOfWork.Users.GetByIdAsync(userId);
@@ -353,7 +353,7 @@ namespace ElectronicsStore.Infrastructure.Services
                 await _unitOfWork.SaveChangesAsync();
 
                 // Send notifications
-                await _notificationService.SendOrderStatusNotificationAsync(order.UserId, order.OrderNumber, updateStatusDto.Status);
+                await _notificationService.SendOrderStatusNotificationAsync(order.UserId, order.Id, updateStatusDto.Status.ToString(), $"Your order status has been updated to {updateStatusDto.Status}");
 
                 // Send emails for specific status changes
                 if (updateStatusDto.Status == Core.Enums.OrderStatus.Shipped && !string.IsNullOrEmpty(order.TrackingNumber))
@@ -415,7 +415,7 @@ namespace ElectronicsStore.Infrastructure.Services
                 await _unitOfWork.SaveChangesAsync();
 
                 // Send notification
-                await _notificationService.SendOrderStatusNotificationAsync(userId, order.OrderNumber, Core.Enums.OrderStatus.Cancelled);
+                await _notificationService.SendOrderStatusNotificationAsync(userId, order.Id, Core.Enums.OrderStatus.Cancelled.ToString(), "Your order has been cancelled");
 
                 return ApiResponse.SuccessResponse("Order cancelled successfully");
             }

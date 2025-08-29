@@ -241,57 +241,57 @@ namespace ElectronicsStore.Infrastructure.Services
                 {
                     new PaymentMethodDto
                     {
-                        Id = "card",
+                        Id = 1,
                         Name = "Credit/Debit Card",
                         Description = "Visa, Mastercard, RuPay, American Express",
                         IsEnabled = true,
                         Icon = "credit_card",
-                        SupportedNetworks = new[] { "Visa", "Mastercard", "RuPay", "American Express" }
+                        SupportedNetworks = new List<string> { "Visa", "Mastercard", "RuPay", "American Express" }
                     },
                     new PaymentMethodDto
                     {
-                        Id = "netbanking",
+                        Id = 2,
                         Name = "Net Banking",
                         Description = "All major banks supported",
                         IsEnabled = true,
                         Icon = "account_balance",
-                        SupportedNetworks = new[] { "SBI", "HDFC", "ICICI", "Axis", "Kotak", "PNB" }
+                        SupportedNetworks = new List<string> { "SBI", "HDFC", "ICICI", "Axis", "Kotak", "PNB" }
                     },
                     new PaymentMethodDto
                     {
-                        Id = "wallet",
+                        Id = 3,
                         Name = "Digital Wallets",
                         Description = "Paytm, PhonePe, Google Pay, Amazon Pay",
                         IsEnabled = true,
                         Icon = "account_balance_wallet",
-                        SupportedNetworks = new[] { "Paytm", "PhonePe", "Google Pay", "Amazon Pay" }
+                        SupportedNetworks = new List<string> { "Paytm", "PhonePe", "Google Pay", "Amazon Pay" }
                     },
                     new PaymentMethodDto
                     {
-                        Id = "upi",
+                        Id = 4,
                         Name = "UPI",
                         Description = "Pay using UPI ID or QR Code",
                         IsEnabled = true,
                         Icon = "qr_code_scanner",
-                        SupportedNetworks = new[] { "BHIM", "PhonePe", "Google Pay", "Paytm" }
+                        SupportedNetworks = new List<string> { "BHIM", "PhonePe", "Google Pay", "Paytm" }
                     },
                     new PaymentMethodDto
                     {
-                        Id = "emi",
+                        Id = 5,
                         Name = "EMI",
                         Description = "No Cost EMI available",
                         IsEnabled = true,
                         Icon = "payment",
-                        SupportedNetworks = new[] { "Bajaj Finserv", "ZestMoney", "Simpl" }
+                        SupportedNetworks = new List<string> { "Bajaj Finserv", "ZestMoney", "Simpl" }
                     },
                     new PaymentMethodDto
                     {
-                        Id = "cod",
+                        Id = 6,
                         Name = "Cash on Delivery",
                         Description = "Pay when you receive your order",
                         IsEnabled = true,
                         Icon = "local_shipping",
-                        SupportedNetworks = new[] { "Cash", "Card on Delivery" }
+                        SupportedNetworks = new List<string> { "Cash", "Card on Delivery" }
                     }
                 };
 
@@ -307,7 +307,7 @@ namespace ElectronicsStore.Infrastructure.Services
         {
             try
             {
-                Payment payment;
+                ElectronicsStore.Core.Entities.Payment payment;
 
                 // Check if it's a Razorpay payment ID or our internal payment ID
                 if (int.TryParse(paymentId, out int internalId))
@@ -358,13 +358,13 @@ namespace ElectronicsStore.Infrastructure.Services
 
                 var paymentStatus = new PaymentStatusDto
                 {
-                    PaymentId = payment.Id,
+                    PaymentId = payment.Id.ToString(),
                     RazorpayPaymentId = payment.RazorpayPaymentId,
                     RazorpayOrderId = payment.RazorpayOrderId,
-                    Status = payment.Status.ToString(),
+                    Status = payment.Status,
                     Amount = payment.Amount,
                     Currency = payment.Currency,
-                    PaymentMethod = payment.PaymentMethod,
+                    PaymentMethod = payment.PaymentMethod.ToString(),
                     CreatedAt = payment.CreatedAt,
                     CompletedAt = payment.CompletedAt
                 };

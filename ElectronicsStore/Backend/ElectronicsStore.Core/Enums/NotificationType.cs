@@ -9,6 +9,8 @@ namespace ElectronicsStore.Core.Enums
         System = 5,
         Welcome = 6,
         ReviewApproved = 7,
-        ReviewRejected = 8
+        ReviewRejected = 8,
+        PriceDrop = 9,
+        StockAlert = 10
     }
 }

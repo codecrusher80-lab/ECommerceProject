@@ -255,7 +255,7 @@ namespace ElectronicsStore.Core.DTOs.Payment
     public class ProcessRefundDto
     {
         [Required(ErrorMessage = "Payment ID is required")]
-        public Guid PaymentId { get; set; }
+        public int PaymentId { get; set; }
 
         [Required(ErrorMessage = "Refund amount is required")]
         [Range(0.01, double.MaxValue, ErrorMessage = "Refund amount must be greater than 0")]
@@ -277,8 +277,8 @@ namespace ElectronicsStore.Core.DTOs.Payment
 
     public class RefundDto
     {
-        public Guid Id { get; set; }
-        public Guid PaymentId { get; set; }
+        public int Id { get; set; }
+        public int PaymentId { get; set; }
         public decimal RefundAmount { get; set; }
         public string Currency { get; set; } = string.Empty;
         public PaymentStatus Status { get; set; }
@@ -320,5 +320,15 @@ namespace ElectronicsStore.Core.DTOs.Payment
         public bool IsFinalState { get; set; }
         public bool IsSuccessState { get; set; }
         public DateTime? StatusChangedAt { get; set; }
+        
+        // Additional properties for service compatibility
+        public string? PaymentId { get; set; }
+        public string? RazorpayPaymentId { get; set; }
+        public string? RazorpayOrderId { get; set; }
+        public decimal Amount { get; set; }
+        public string? Currency { get; set; }
+        public string? PaymentMethod { get; set; }
+        public DateTime? CreatedAt { get; set; }
+        public DateTime? CompletedAt { get; set; }
     }
 }

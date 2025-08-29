@@ -377,6 +377,44 @@ namespace ElectronicsStore.Infrastructure.Services
 
             await CreateNotificationAsync(notification);
         }
+
+        public async Task SendOrderStatusNotificationAsync(string userId, int orderId, string orderStatus, string message)
+        {
+            try
+            {
+                var notification = new CreateNotificationDto
+                {
+                    UserId = userId,
+                    Title = "Order Status Update",
+                    Message = message,
+                    Type = Core.Enums.NotificationType.OrderUpdate,
+                    Data = System.Text.Json.JsonSerializer.Serialize(new Dictionary<string, object>
+                    {
+                        { "OrderId", orderId },
+                        { "OrderStatus", orderStatus }
+                    })
+                };
+
+                await CreateNotificationAsync(notification);
+
+                // Send real-time notification
+                var notificationDto = new NotificationDto
+                {
+                    Title = notification.Title,
+                    Message = notification.Message,
+                    Type = notification.Type,
+                    CreatedAt = DateTime.UtcNow,
+                    Data = notification.Data
+                };
+
+                await SendRealTimeNotificationAsync(userId, notificationDto);
+            }
+            catch (Exception ex)
+            {
+                // Log error but don't throw to avoid breaking order processing
+                Console.WriteLine($"Error sending order status notification: {ex.Message}");
+            }
+        }
     }
 
     // SignalR Hub for real-time notifications

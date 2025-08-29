@@ -340,7 +340,7 @@ namespace ElectronicsStore.Infrastructure.Services
                 result.IsValid = true;
                 result.DiscountAmount = discountAmount;
                 result.CouponId = coupon.Id;
-                result.DiscountType = coupon.DiscountType;
+                result.DiscountType = coupon.DiscountType.ToString();
                 result.DiscountValue = coupon.DiscountValue;
 
                 return ApiResponse<CouponValidationResult>.SuccessResponse(result);
@@ -438,6 +438,50 @@ namespace ElectronicsStore.Infrastructure.Services
                 coupon.UsedCount++;
                 await _unitOfWork.Coupons.UpdateAsync(coupon);
 
+                await _unitOfWork.SaveChangesAsync();
+
+                return ApiResponse.SuccessResponse("Coupon used successfully");
+            }
+            catch (Exception ex)
+            {
+                return ApiResponse.ErrorResponse($"Error using coupon: {ex.Message}");
+            }
+        }
+
+        public async Task<ApiResponse> UseCouponAsync(string couponCode, string userId, decimal orderAmount)
+        {
+            try
+            {
+                var coupon = await _unitOfWork.Coupons.Query()
+                    .Include(c => c.CouponUsages)
+                    .FirstOrDefaultAsync(c => c.Code == couponCode && c.IsActive);
+
+                if (coupon == null)
+                    return ApiResponse.ErrorResponse("Coupon not found or inactive");
+
+                // Validate coupon
+                var validation = new ValidateCouponDto
+                {
+                    CouponCode = couponCode,
+                    UserId = userId,
+                    OrderAmount = orderAmount
+                };
+
+                var validationResult = await ValidateCouponAsync(validation);
+                if (!validationResult.Success || !validationResult.Data.IsValid)
+                    return ApiResponse.ErrorResponse(validationResult.Data.ErrorMessage ?? "Coupon is not valid");
+
+                // Create usage record
+                var couponUsage = new CouponUsage
+                {
+                    CouponId = coupon.Id,
+                    UserId = userId,
+                    UsedAt = DateTime.UtcNow
+                };
+
+                await _unitOfWork.CouponUsages.AddAsync(couponUsage);
+                coupon.UsedCount++;
+                await _unitOfWork.Coupons.UpdateAsync(coupon);
                 await _unitOfWork.SaveChangesAsync();
 
                 return ApiResponse.SuccessResponse("Coupon used successfully");

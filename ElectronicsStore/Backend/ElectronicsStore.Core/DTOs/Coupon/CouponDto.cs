@@ -187,5 +187,8 @@ namespace ElectronicsStore.Core.DTOs.Coupon
         // Additional properties for service compatibility
         public string ErrorMessage { get; set; } = string.Empty;
         public int CouponId { get; set; }
+        public string CouponCode { get; set; } = string.Empty;
+        public string DiscountType { get; set; } = string.Empty;
+        public decimal DiscountValue { get; set; }
     }
 }

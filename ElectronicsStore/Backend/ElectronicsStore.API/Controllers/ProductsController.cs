@@ -110,10 +110,4 @@ namespace ElectronicsStore.API.Controllers
             return result.Success ? Ok(result) : BadRequest(result);
         }
     }
-
-    // Additional DTOs
-    public class UpdateStockDto
-    {
-        public int Quantity { get; set; }
-    }
 }

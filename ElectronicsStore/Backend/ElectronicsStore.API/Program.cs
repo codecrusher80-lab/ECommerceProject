@@ -169,8 +169,8 @@ app.UseHttpsRedirection();
 // Custom Middleware
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 
-// Rate Limiting
-app.UseRateLimiter();
+// Rate Limiting (commented out due to configuration issues)
+// app.UseRateLimiter();
 
 // CORS
 app.UseCors("AllowReactApp");

@@ -16,5 +16,6 @@ namespace ElectronicsStore.Core.Interfaces.Services
         Task<ApiResponse<IEnumerable<BrandDto>>> GetBrandsAsync();
         Task<ApiResponse> UpdateStockAsync(int productId, int quantity);
         Task<ApiResponse> IncrementViewCountAsync(int productId);
+        Task<ApiResponse> UpdateProductStockAsync(int productId, int stockQuantity);
     }
 }

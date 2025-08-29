@@ -25,5 +25,6 @@ namespace ElectronicsStore.Core.DTOs.Wishlist
         public List<WishlistItemDto> Items { get; set; } = new();
         public int TotalItems { get; set; }
         public decimal TotalValue { get; set; }
+        public List<WishlistItemDto> RecentItems { get; set; } = new();
     }
 }

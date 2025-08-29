@@ -10,5 +10,7 @@ namespace ElectronicsStore.Core.Interfaces.Services
         Task<ApiResponse<RefundDto>> ProcessRefundAsync(ProcessRefundDto processRefundDto);
         Task<ApiResponse<IEnumerable<PaymentMethodDto>>> GetPaymentMethodsAsync();
         Task<ApiResponse<PaymentStatusDto>> GetPaymentStatusAsync(string paymentId);
+        Task<ApiResponse<PagedResult<PaymentDto>>> GetPaymentHistoryAsync(string userId, PaginationParams pagination);
+        Task<ApiResponse> HandlePaymentWebhookAsync(string payload, string signature);
     }
 }

@@ -47,8 +47,8 @@ namespace ElectronicsStore.API.Middleware
                     errorResponse.Message = "Unauthorized access";
                     break;
 
-                case ArgumentException:
                 case ArgumentNullException:
+                case ArgumentException:
                     response.StatusCode = (int)HttpStatusCode.BadRequest;
                     errorResponse.Message = exception.Message;
                     break;

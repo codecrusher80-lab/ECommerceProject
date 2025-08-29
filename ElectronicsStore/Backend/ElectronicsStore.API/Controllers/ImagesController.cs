@@ -125,7 +125,8 @@ namespace ElectronicsStore.API.Controllers
             if (string.IsNullOrEmpty(imageUrl))
                 return BadRequest(ApiResponse<Dictionary<string, string>>.ErrorResponse("Image URL is required"));
 
-            var result = await _imageService.CreateThumbnailsAsync(imageUrl);
+            var sizes = new List<(int width, int height)> { (150, 150), (300, 300), (500, 500) };
+            var result = await _imageService.CreateThumbnailsAsync(imageUrl, sizes);
             
             if (result.Success)
                 return Ok(result);

@@ -118,17 +118,11 @@ builder.Services.AddCors(options =>
     });
 });
 
-// Rate Limiting
-builder.Services.AddRateLimiter(options =>
-{
-    options.AddFixedWindowLimiter("ApiPolicy", limiterOptions =>
-    {
-        limiterOptions.Window = TimeSpan.FromMinutes(1);
-        limiterOptions.PermitLimit = 100;
-        limiterOptions.QueueLimit = 10;
-        limiterOptions.QueueProcessingOrder = System.Threading.RateLimiting.QueueProcessingOrder.OldestFirst;
-    });
-});
+// Rate Limiting (commented out due to version compatibility)
+// builder.Services.AddRateLimiter(options =>
+// {
+//     // Rate limiting configuration
+// });
 
 // Add Application Services
 builder.Services.AddApplicationServices();

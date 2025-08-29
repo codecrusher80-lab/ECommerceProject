@@ -377,7 +377,7 @@ namespace ElectronicsStore.Infrastructure.Services
             }
         }
 
-        public async Task<ApiResponse<IEnumerable<PaymentDto>>> GetPaymentHistoryAsync(string userId, PaginationParams pagination)
+        public async Task<ApiResponse<PagedResult<PaymentDto>>> GetPaymentHistoryAsync(string userId, PaginationParams pagination)
         {
             try
             {
@@ -391,12 +391,18 @@ namespace ElectronicsStore.Infrastructure.Services
                     .Take(pagination.PageSize)
                     .ToListAsync();
 
-                var paymentDtos = _mapper.Map<IEnumerable<PaymentDto>>(payments);
-                return ApiResponse<IEnumerable<PaymentDto>>.SuccessResponse(paymentDtos);
+                var totalItems = await _unitOfWork.Payments.Query()
+                    .Include(p => p.Order)
+                    .Where(p => p.Order.UserId == userId)
+                    .CountAsync();
+                
+                var paymentDtos = _mapper.Map<List<PaymentDto>>(payments);
+                var pagedResult = new PagedResult<PaymentDto>(paymentDtos, totalItems, pagination.PageNumber, pagination.PageSize);
+                return ApiResponse<PagedResult<PaymentDto>>.SuccessResponse(pagedResult);
             }
             catch (Exception ex)
             {
-                return ApiResponse<IEnumerable<PaymentDto>>.ErrorResponse($"Error retrieving payment history: {ex.Message}");
+                return ApiResponse<PagedResult<PaymentDto>>.ErrorResponse($"Error retrieving payment history: {ex.Message}");
             }
         }
 
@@ -469,6 +475,75 @@ namespace ElectronicsStore.Infrastructure.Services
             using var hmac = new HMACSHA256(keyBytes);
             var hash = hmac.ComputeHash(messageBytes);
             return Convert.ToHexString(hash).ToLower();
+        }
+
+        public async Task<ApiResponse> HandlePaymentWebhookAsync(string payload, string signature)
+        {
+            try
+            {
+                // Verify webhook signature
+                if (!IsValidWebhookSignature(payload, signature))
+                    return ApiResponse.ErrorResponse("Invalid webhook signature");
+
+                // Parse webhook payload
+                var webhookData = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, object>>(payload);
+                
+                if (webhookData == null || !webhookData.ContainsKey("event"))
+                    return ApiResponse.ErrorResponse("Invalid webhook payload");
+
+                var eventType = webhookData["event"].ToString();
+                
+                switch (eventType)
+                {
+                    case "payment.captured":
+                    case "payment.failed":
+                        // Handle payment status update
+                        await HandlePaymentStatusUpdate(webhookData);
+                        break;
+                    case "refund.processed":
+                        // Handle refund status update  
+                        await HandleRefundStatusUpdate(webhookData);
+                        break;
+                    default:
+                        // Log unhandled event type
+                        Console.WriteLine($"Unhandled webhook event type: {eventType}");
+                        break;
+                }
+
+                return ApiResponse.SuccessResponse("Webhook processed successfully");
+            }
+            catch (Exception ex)
+            {
+                return ApiResponse.ErrorResponse($"Error processing webhook: {ex.Message}");
+            }
+        }
+
+        private bool IsValidWebhookSignature(string payload, string signature)
+        {
+            // Implement webhook signature validation based on payment gateway requirements
+            // For Razorpay, this would involve HMAC SHA256 validation
+            try
+            {
+                var webhookSecret = _configuration["Razorpay:WebhookSecret"] ?? "";
+                var expectedSignature = ComputeHmacSha256(payload, webhookSecret);
+                return signature.Equals(expectedSignature, StringComparison.OrdinalIgnoreCase);
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        private async Task HandlePaymentStatusUpdate(Dictionary<string, object> webhookData)
+        {
+            // Extract payment information and update status
+            // Implementation depends on webhook payload structure
+        }
+
+        private async Task HandleRefundStatusUpdate(Dictionary<string, object> webhookData)
+        {
+            // Extract refund information and update status
+            // Implementation depends on webhook payload structure
         }
     }
 }

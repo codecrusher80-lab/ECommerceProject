@@ -13,5 +13,6 @@ namespace ElectronicsStore.Core.Interfaces.Services
         Task<ApiResponse<IEnumerable<CategorySalesDto>>> GetCategorySalesAsync();
         Task<ApiResponse<OrderAnalyticsDto>> GetOrderAnalyticsAsync(DateTime fromDate, DateTime toDate);
         Task<ApiResponse<ProductAnalyticsDto>> GetProductAnalyticsAsync(int productId);
+        Task<ApiResponse<IEnumerable<UserActivityDto>>> GetUserActivityAnalyticsAsync(DateTime fromDate, DateTime toDate);
     }
 }

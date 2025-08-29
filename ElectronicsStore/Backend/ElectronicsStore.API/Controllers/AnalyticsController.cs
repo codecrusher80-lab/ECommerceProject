@@ -178,7 +178,9 @@ namespace ElectronicsStore.API.Controllers
             if (days < 1 || days > 365)
                 return BadRequest(ApiResponse<IEnumerable<UserActivityDto>>.ErrorResponse("Days must be between 1 and 365"));
 
-            var result = await _analyticsService.GetUserActivityAnalyticsAsync(days);
+            var fromDate = DateTime.UtcNow.AddDays(-days);
+            var toDate = DateTime.UtcNow;
+            var result = await _analyticsService.GetUserActivityAnalyticsAsync(fromDate, toDate);
             
             if (result.Success)
                 return Ok(result);

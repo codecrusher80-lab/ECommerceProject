@@ -20,6 +20,17 @@ namespace ElectronicsStore.Core.DTOs.Common
 
     public class PagedResult<T>
     {
+        public PagedResult() { }
+        
+        public PagedResult(List<T> items, int totalCount, int pageNumber, int pageSize)
+        {
+            Items = items;
+            TotalCount = totalCount;
+            TotalItems = totalCount;
+            PageNumber = pageNumber;
+            PageSize = pageSize;
+        }
+        
         public List<T> Items { get; set; } = new();
         public int TotalCount { get; set; }
         

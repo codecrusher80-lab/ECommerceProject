@@ -160,5 +160,15 @@ namespace ElectronicsStore.Core.DTOs.Product
         /// Minimum stock level
         /// </summary>
         public int? MinStock { get; set; }
+        
+        /// <summary>
+        /// Field to sort by (e.g., "name", "price", "rating", "created")
+        /// </summary>
+        public string? SortBy { get; set; }
+        
+        /// <summary>
+        /// Sort in descending order
+        /// </summary>
+        public bool SortDescending { get; set; } = false;
     }
 }

@@ -138,12 +138,13 @@ namespace ElectronicsStore.API.Controllers
         /// Handle payment webhook (Razorpay)
         /// </summary>
         [HttpPost("webhook")]
-        public async Task<ActionResult<ApiResponse>> HandlePaymentWebhook([FromBody] Dictionary<string, object> payload)
+        public async Task<ActionResult<ApiResponse>> HandlePaymentWebhook([FromBody] string payload)
         {
             try
             {
                 // Verify webhook signature here if needed
-                var result = await _paymentService.HandlePaymentWebhookAsync(payload);
+                var signature = Request.Headers["X-Razorpay-Signature"].ToString();
+                var result = await _paymentService.HandlePaymentWebhookAsync(payload, signature);
                 
                 if (result.Success)
                     return Ok(result);

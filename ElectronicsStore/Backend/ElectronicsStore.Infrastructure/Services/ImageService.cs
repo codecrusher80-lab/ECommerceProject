@@ -381,7 +381,12 @@ namespace ElectronicsStore.Infrastructure.Services
             return $"{fileNameWithoutExtension}_{timestamp}_{random}{extension}";
         }
 
-        public async Task<ApiResponse<long>> GetImageSizeAsync(string imageUrl)
+        public async Task<ApiResponse<(int width, int height)>> GetImageSizeAsync(string imageUrl)
+        {
+            return await GetImageDimensionsAsync(imageUrl);
+        }
+        
+        public async Task<ApiResponse<long>> GetImageFileSizeAsync(string imageUrl)
         {
             try
             {
@@ -396,7 +401,7 @@ namespace ElectronicsStore.Infrastructure.Services
             }
             catch (Exception ex)
             {
-                return ApiResponse<long>.ErrorResponse($"Error getting image size: {ex.Message}");
+                return ApiResponse<long>.ErrorResponse($"Error getting image file size: {ex.Message}");
             }
         }
 
@@ -416,6 +421,39 @@ namespace ElectronicsStore.Infrastructure.Services
             catch (Exception ex)
             {
                 return ApiResponse<(int, int)>.ErrorResponse($"Error getting image dimensions: {ex.Message}");
+            }
+        }
+
+        public async Task<ApiResponse<List<string>>> CreateThumbnailsAsync(string imageUrl, List<(int width, int height)> sizes)
+        {
+            try
+            {
+                var thumbnails = new List<string>();
+                var relativePath = imageUrl.Replace(_baseUrl, "").TrimStart('/');
+                var fullPath = Path.Combine(_baseUploadPath, relativePath);
+                
+                if (!File.Exists(fullPath))
+                    return ApiResponse<List<string>>.ErrorResponse("Image file not found");
+
+                using var image = await Image.LoadAsync(fullPath);
+                
+                foreach (var (width, height) in sizes)
+                {
+                    var thumbnailFileName = $"thumb_{width}x{height}_{Path.GetFileName(relativePath)}";
+                    var thumbnailPath = Path.Combine(Path.GetDirectoryName(fullPath)!, thumbnailFileName);
+                    
+                    using var thumbnail = image.Clone(ctx => ctx.Resize(width, height));
+                    await thumbnail.SaveAsync(thumbnailPath);
+                    
+                    var thumbnailUrl = imageUrl.Replace(Path.GetFileName(imageUrl), thumbnailFileName);
+                    thumbnails.Add(thumbnailUrl);
+                }
+                
+                return ApiResponse<List<string>>.SuccessResponse(thumbnails);
+            }
+            catch (Exception ex)
+            {
+                return ApiResponse<List<string>>.ErrorResponse($"Error creating thumbnails: {ex.Message}");
             }
         }
     }

@@ -326,5 +326,27 @@ namespace ElectronicsStore.Infrastructure.Services
                 return ApiResponse.ErrorResponse($"Error updating view count: {ex.Message}");
             }
         }
+
+        public async Task<ApiResponse> UpdateProductStockAsync(int productId, int stockQuantity)
+        {
+            try
+            {
+                var product = await _unitOfWork.Products.GetByIdAsync(productId);
+                if (product == null)
+                    return ApiResponse.ErrorResponse("Product not found");
+
+                product.StockQuantity = stockQuantity;
+                product.UpdatedAt = DateTime.UtcNow;
+
+                await _unitOfWork.Products.UpdateAsync(product);
+                await _unitOfWork.SaveChangesAsync();
+
+                return ApiResponse.SuccessResponse("Product stock updated successfully");
+            }
+            catch (Exception ex)
+            {
+                return ApiResponse.ErrorResponse($"Error updating product stock: {ex.Message}");
+            }
+        }
     }
 }

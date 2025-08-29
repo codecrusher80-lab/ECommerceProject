@@ -22,22 +22,32 @@ namespace ElectronicsStore.API.Extensions
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             services.AddScoped<IProductRepository, ProductRepository>();
 
-            // Application Services
+            // Core Application Services
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IProductService, ProductService>();
             services.AddScoped<IOrderService, OrderService>();
             services.AddScoped<ICartService, CartService>();
             services.AddScoped<IWishlistService, WishlistService>();
             services.AddScoped<IReviewService, ReviewService>();
-            services.AddScoped<INotificationService, NotificationService>();
-            services.AddScoped<IEmailService, EmailService>();
-            services.AddScoped<IPaymentService, PaymentService>();
-            services.AddScoped<IImageService, ImageService>();
             services.AddScoped<ICouponService, CouponService>();
+            services.AddScoped<INotificationService, NotificationService>();
+            services.AddScoped<IPaymentService, PaymentService>();
             services.AddScoped<IAnalyticsService, AnalyticsService>();
 
-            // Background Services
+            // Infrastructure Services
+            services.AddScoped<IEmailService, EmailService>();
+            services.AddScoped<IImageService, ImageService>();
             services.AddScoped<IBackgroundJobService, BackgroundJobService>();
+
+            // Background Job Processors
+            services.AddScoped<IEmailJobProcessor, EmailJobProcessor>();
+            services.AddScoped<IInventoryJobProcessor, InventoryJobProcessor>();
+            services.AddScoped<IOrderJobProcessor, OrderJobProcessor>();
+            services.AddScoped<IAnalyticsJobProcessor, AnalyticsJobProcessor>();
+            services.AddScoped<ICleanupJobProcessor, CleanupJobProcessor>();
+
+            // User Service (if not already registered by Identity)
+            services.AddScoped<IUserService, UserService>();
 
             return services;
         }

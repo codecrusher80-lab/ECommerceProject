@@ -9,6 +9,9 @@ namespace ElectronicsStore.Core.DTOs.Wishlist
         public int ProductId { get; set; }
         public ProductDto Product { get; set; } = null!;
         public DateTime CreatedAt { get; set; }
+        
+        // Additional property for mapping compatibility
+        public DateTime AddedDate { get; set; }
     }
 
     public class AddToWishlistDto

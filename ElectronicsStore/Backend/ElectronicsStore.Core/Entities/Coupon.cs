@@ -48,6 +48,15 @@ namespace ElectronicsStore.Core.Entities
             set => MaxDiscountAmount = value;
         }
 
+        /// <summary>
+        /// Alias for ValidTo for service compatibility
+        /// </summary>
+        public DateTime ValidUntil
+        {
+            get => ValidTo;
+            set => ValidTo = value;
+        }
+
         [Required]
         public DateTime ValidFrom { get; set; }
 

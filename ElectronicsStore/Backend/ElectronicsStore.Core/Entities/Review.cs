@@ -31,5 +31,6 @@ namespace ElectronicsStore.Core.Entities
         // Navigation Properties
         public virtual User User { get; set; } = null!;
         public virtual Product Product { get; set; } = null!;
+        public virtual ICollection<ReviewHelpful> ReviewHelpful { get; set; } = new List<ReviewHelpful>();
     }
 }

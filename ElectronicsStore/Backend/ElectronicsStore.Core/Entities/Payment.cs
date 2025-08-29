@@ -7,7 +7,7 @@ namespace ElectronicsStore.Core.Entities
     public class Payment : BaseEntity
     {
         [Required]
-        public int OrderId { get; set; }
+        public Guid OrderId { get; set; }
 
         [Required]
         public string UserId { get; set; } = string.Empty;
@@ -43,6 +43,9 @@ namespace ElectronicsStore.Core.Entities
 
         [StringLength(200)]
         public string? RazorpayPaymentId { get; set; }
+
+        [StringLength(500)]
+        public string? RazorpaySignature { get; set; }
 
         [StringLength(100)]
         public string? GatewayName { get; set; }

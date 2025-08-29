@@ -176,6 +176,13 @@ namespace ElectronicsStore.Core.DTOs.User
         /// Referral statistics
         /// </summary>
         public UserReferralStatsDto ReferralStats { get; set; } = new();
+        
+        /// <summary>
+        /// Additional properties for service compatibility
+        /// </summary>
+        public int CompletedOrders { get; set; }
+        public int WishlistItems { get; set; }
+        public DateTime JoinDate { get; set; }
     }
 
     /// <summary>

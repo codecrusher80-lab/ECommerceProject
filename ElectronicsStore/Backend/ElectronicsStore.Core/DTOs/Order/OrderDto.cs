@@ -25,6 +25,11 @@ namespace ElectronicsStore.Core.DTOs.Order
         public List<OrderItemDto> Items { get; set; } = new();
         public List<OrderStatusHistoryDto> StatusHistories { get; set; } = new();
         public DateTime CreatedAt { get; set; }
+        
+        // Additional properties for mapping compatibility
+        public string CustomerName { get; set; } = string.Empty;
+        public string CustomerEmail { get; set; } = string.Empty;
+        public List<OrderStatusHistoryDto> StatusHistory { get; set; } = new();
     }
 
     public class CreateOrderDto
@@ -50,6 +55,9 @@ namespace ElectronicsStore.Core.DTOs.Order
         public int Quantity { get; set; }
         public decimal UnitPrice { get; set; }
         public decimal TotalPrice { get; set; }
+        
+        // Additional properties for mapping compatibility
+        public string? ProductImage { get; set; }
     }
 
     public class CreateOrderItemDto
@@ -97,6 +105,7 @@ namespace ElectronicsStore.Core.DTOs.Order
 
     public class OrderFilterDto
     {
+        public string? SearchTerm { get; set; }
         public OrderStatus? Status { get; set; }
         public PaymentStatus? PaymentStatus { get; set; }
         public DateTime? FromDate { get; set; }
@@ -104,5 +113,9 @@ namespace ElectronicsStore.Core.DTOs.Order
         public decimal? MinAmount { get; set; }
         public decimal? MaxAmount { get; set; }
         public string? PaymentMethod { get; set; }
+        
+        // Additional properties for service compatibility
+        public string? SortBy { get; set; }
+        public bool SortDescending { get; set; } = false;
     }
 }

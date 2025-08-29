@@ -84,17 +84,24 @@ namespace ElectronicsStore.Core.DTOs.Analytics
         public int QuantitySold { get; set; }
         public decimal Revenue { get; set; }
         public int Orders { get; set; }
+        
+        // Additional properties for service compatibility
+        public int TotalQuantitySold { get; set; }
+        public decimal TotalRevenue { get; set; }
+        public int TotalOrders { get; set; }
     }
 
     public class CustomerAnalyticsDto
     {
         public string CustomerId { get; set; } = string.Empty;
+        public string UserId { get; set; } = string.Empty;
         public string CustomerName { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
         public int TotalOrders { get; set; }
         public decimal TotalSpent { get; set; }
         public decimal AverageOrderValue { get; set; }
         public DateTime LastOrderDate { get; set; }
+        public DateTime FirstOrderDate { get; set; }
     }
 
     public class MonthlyRevenueDto

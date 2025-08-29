@@ -46,6 +46,11 @@ namespace ElectronicsStore.Core.DTOs.Notification
         public int TotalNotifications { get; set; }
         public int UnreadCount { get; set; }
         public List<NotificationDto> RecentNotifications { get; set; } = new();
+        
+        // Additional properties expected by service
+        public int TotalCount { get; set; }
+        public Dictionary<string, int>? NotificationsByType { get; set; }
+        public DateTime? LastNotificationDate { get; set; }
     }
 
     public class MarkNotificationsReadDto

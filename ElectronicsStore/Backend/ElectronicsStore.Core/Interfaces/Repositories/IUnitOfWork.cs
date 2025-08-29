@@ -10,16 +10,19 @@ namespace ElectronicsStore.Core.Interfaces.Repositories
         IProductRepository Products { get; }
         IGenericRepository<Order> Orders { get; }
         IGenericRepository<OrderItem> OrderItems { get; }
+        IGenericRepository<OrderStatusHistory> OrderStatusHistories { get; }
         IGenericRepository<CartItem> CartItems { get; }
         IGenericRepository<WishlistItem> WishlistItems { get; }
         IGenericRepository<Review> Reviews { get; }
+        IGenericRepository<ReviewHelpful> ReviewHelpful { get; }
         IGenericRepository<Address> Addresses { get; }
         IGenericRepository<Coupon> Coupons { get; }
         IGenericRepository<Notification> Notifications { get; }
         IGenericRepository<ProductImage> ProductImages { get; }
         IGenericRepository<ProductAttribute> ProductAttributes { get; }
-        IGenericRepository<OrderStatusHistory> OrderStatusHistories { get; }
         IGenericRepository<Payment> Payments { get; }
+        IGenericRepository<Refund> Refunds { get; }
+        IGenericRepository<CouponUsage> CouponUsages { get; }
 
         Task<int> SaveChangesAsync();
         Task BeginTransactionAsync();

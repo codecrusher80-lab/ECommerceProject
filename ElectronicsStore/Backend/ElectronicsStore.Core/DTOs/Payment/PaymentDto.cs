@@ -186,12 +186,12 @@ namespace ElectronicsStore.Core.DTOs.Payment
 
     public class PaymentOrderDto
     {
-        public Guid Id { get; set; }
+        public int Id { get; set; }
         public Guid OrderId { get; set; }
         public PaymentMethod PaymentMethod { get; set; }
         public decimal Amount { get; set; }
         public string Currency { get; set; } = string.Empty;
-        public PaymentStatus Status { get; set; }
+        public string Status { get; set; } = string.Empty;
         public string? TransactionId { get; set; }
         public string? GatewayOrderId { get; set; }
         public string? PaymentUrl { get; set; }
@@ -219,6 +219,15 @@ namespace ElectronicsStore.Core.DTOs.Payment
         public string? Signature { get; set; }
 
         public Dictionary<string, object>? VerificationData { get; set; }
+
+        [StringLength(200, ErrorMessage = "Razorpay Order ID cannot exceed 200 characters")]
+        public string? RazorpayOrderId { get; set; }
+
+        [StringLength(200, ErrorMessage = "Razorpay Payment ID cannot exceed 200 characters")]
+        public string? RazorpayPaymentId { get; set; }
+
+        [StringLength(500, ErrorMessage = "Razorpay Signature cannot exceed 500 characters")]
+        public string? RazorpaySignature { get; set; }
     }
 
     public class PaymentVerificationDto
@@ -230,6 +239,14 @@ namespace ElectronicsStore.Core.DTOs.Payment
         public DateTime? VerifiedAt { get; set; }
         public string? FailureReason { get; set; }
         public Dictionary<string, object>? VerificationMetadata { get; set; }
+        
+        // Additional properties for service compatibility
+        public string? PaymentId { get; set; }
+        public bool IsVerified { get; set; }
+        public string? RazorpayPaymentId { get; set; }
+        public string? RazorpayOrderId { get; set; }
+        public decimal Amount { get; set; }
+        public string? Message { get; set; }
     }
 
     public class ProcessRefundDto
@@ -250,6 +267,9 @@ namespace ElectronicsStore.Core.DTOs.Payment
         public bool IsPartialRefund { get; set; } = false;
 
         public Dictionary<string, object>? RefundMetadata { get; set; }
+        
+        // Additional property for service compatibility
+        public decimal Amount { get; set; }
     }
 
     public class RefundDto

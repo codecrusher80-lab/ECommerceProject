@@ -27,6 +27,12 @@ namespace ElectronicsStore.Core.DTOs.Product
         public List<ProductImageDto> Images { get; set; } = new();
         public List<ProductAttributeDto> Attributes { get; set; } = new();
         public DateTime CreatedAt { get; set; }
+        
+        // Additional properties for service compatibility
+        public string CategoryName { get; set; } = string.Empty;
+        public string BrandName { get; set; } = string.Empty;
+        public int ReviewCount { get; set; }
+        public string? ImageUrl { get; set; }
     }
 
     public class CreateProductDto
@@ -101,6 +107,7 @@ namespace ElectronicsStore.Core.DTOs.Product
         public int? ParentCategoryId { get; set; }
         public string? ParentCategoryName { get; set; }
         public List<CategoryDto> SubCategories { get; set; } = new();
+        public int ProductCount { get; set; }
     }
 
     public class BrandDto
@@ -111,6 +118,25 @@ namespace ElectronicsStore.Core.DTOs.Product
         public string? LogoUrl { get; set; }
         public string? Website { get; set; }
         public bool IsActive { get; set; }
+        public int ProductCount { get; set; }
+    }
+
+    public class CreateCategoryDto
+    {
+        public string Name { get; set; } = string.Empty;
+        public string? Description { get; set; }
+        public string? ImageUrl { get; set; }
+        public bool IsActive { get; set; } = true;
+        public int? ParentCategoryId { get; set; }
+    }
+
+    public class CreateBrandDto
+    {
+        public string Name { get; set; } = string.Empty;
+        public string? Description { get; set; }
+        public string? LogoUrl { get; set; }
+        public string? Website { get; set; }
+        public bool IsActive { get; set; } = true;
     }
 
     public class ProductFilterDto

@@ -92,10 +92,16 @@ namespace ElectronicsStore.Core.Entities
 
         public int? CouponId { get; set; }
 
+        public int? ShippingAddressId { get; set; }
+
+        public int? BillingAddressId { get; set; }
+
         // Navigation Properties
         public virtual User User { get; set; } = null!;
         public virtual Address? Address { get; set; }
         public virtual Coupon? Coupon { get; set; }
+        public virtual Address? ShippingAddress { get; set; }
+        public virtual Address? BillingAddress { get; set; }
         public virtual ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
         public virtual ICollection<OrderStatusHistory> OrderStatusHistories { get; set; } = new List<OrderStatusHistory>();
     }

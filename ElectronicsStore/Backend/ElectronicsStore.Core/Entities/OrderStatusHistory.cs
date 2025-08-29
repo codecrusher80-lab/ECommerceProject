@@ -10,6 +10,13 @@ namespace ElectronicsStore.Core.Entities
 
         [MaxLength(500)]
         public string? Notes { get; set; }
+        
+        // Alias for service compatibility
+        public string? Comments 
+        {
+            get => Notes;
+            set => Notes = value;
+        }
 
         public DateTime StatusChangedAt { get; set; } = DateTime.UtcNow;
 

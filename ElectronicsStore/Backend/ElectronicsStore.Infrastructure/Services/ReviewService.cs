@@ -25,10 +25,7 @@ namespace ElectronicsStore.Infrastructure.Services
         {
             try
             {
-                var query = _unitOfWork.Reviews.Query()
-                    .Include(r => r.Product)
-                    .Include(r => r.User)
-                    .Include(r => r.ReviewHelpful);
+                var query = _unitOfWork.Reviews.Query();
 
                 // Apply filters
                 if (filter.ProductId.HasValue)
@@ -48,6 +45,11 @@ namespace ElectronicsStore.Infrastructure.Services
 
                 if (!string.IsNullOrEmpty(filter.SearchTerm))
                     query = query.Where(r => r.Comment.Contains(filter.SearchTerm) || r.Title.Contains(filter.SearchTerm));
+
+                // Apply includes after filtering
+                query = query.Include(r => r.Product)
+                    .Include(r => r.User)
+                    .Include(r => r.ReviewHelpful);
 
                 // Apply sorting
                 query = filter.SortBy?.ToLower() switch
@@ -399,7 +401,7 @@ namespace ElectronicsStore.Infrastructure.Services
                 {
                     if (approvedReviews.Any())
                     {
-                        product.AverageRating = (decimal)approvedReviews.Average(r => r.Rating);
+                        product.AverageRating = approvedReviews.Average(r => r.Rating);
                         product.TotalReviews = approvedReviews.Count();
                     }
                     else

@@ -6,6 +6,7 @@ namespace ElectronicsStore.Core.DTOs.Review
     {
         public int Id { get; set; }
         public int ProductId { get; set; }
+        public string ProductName { get; set; } = string.Empty;
         public string UserId { get; set; } = string.Empty;
         public string UserName { get; set; } = string.Empty;
         public string UserProfileImage { get; set; } = string.Empty;
@@ -55,15 +56,22 @@ namespace ElectronicsStore.Core.DTOs.Review
     public class ReviewFilterDto
     {
         public int? ProductId { get; set; }
+        public string? UserId { get; set; }
         public int? Rating { get; set; }
+        public int? MinRating { get; set; }
+        public int? MaxRating { get; set; }
         public bool? IsVerifiedPurchase { get; set; }
         public bool? IsApproved { get; set; }
+        public string? SearchTerm { get; set; }
+        public string? SortBy { get; set; }
+        public bool SortDescending { get; set; } = false;
         public DateTime? FromDate { get; set; }
         public DateTime? ToDate { get; set; }
     }
 
     public class ReviewSummaryDto
     {
+        public int ProductId { get; set; }
         public double AverageRating { get; set; }
         public int TotalReviews { get; set; }
         public Dictionary<int, int> RatingDistribution { get; set; } = new();

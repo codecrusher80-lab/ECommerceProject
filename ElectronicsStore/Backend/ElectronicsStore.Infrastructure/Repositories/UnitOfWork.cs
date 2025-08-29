@@ -19,6 +19,7 @@ namespace ElectronicsStore.Infrastructure.Repositories
         private IGenericRepository<CartItem>? _cartItems;
         private IGenericRepository<WishlistItem>? _wishlistItems;
         private IGenericRepository<Review>? _reviews;
+        private IGenericRepository<ReviewHelpful>? _reviewHelpful;
         private IGenericRepository<Address>? _addresses;
         private IGenericRepository<Coupon>? _coupons;
         private IGenericRepository<Notification>? _notifications;
@@ -26,6 +27,8 @@ namespace ElectronicsStore.Infrastructure.Repositories
         private IGenericRepository<ProductAttribute>? _productAttributes;
         private IGenericRepository<OrderStatusHistory>? _orderStatusHistories;
         private IGenericRepository<Payment>? _payments;
+        private IGenericRepository<Refund>? _refunds;
+        private IGenericRepository<CouponUsage>? _couponUsages;
 
         public UnitOfWork(ApplicationDbContext context)
         {
@@ -59,6 +62,9 @@ namespace ElectronicsStore.Infrastructure.Repositories
         public IGenericRepository<Review> Reviews =>
             _reviews ??= new GenericRepository<Review>(_context);
 
+        public IGenericRepository<ReviewHelpful> ReviewHelpful =>
+            _reviewHelpful ??= new GenericRepository<ReviewHelpful>(_context);
+
         public IGenericRepository<Address> Addresses =>
             _addresses ??= new GenericRepository<Address>(_context);
 
@@ -79,6 +85,12 @@ namespace ElectronicsStore.Infrastructure.Repositories
 
         public IGenericRepository<Payment> Payments =>
             _payments ??= new GenericRepository<Payment>(_context);
+
+        public IGenericRepository<Refund> Refunds =>
+            _refunds ??= new GenericRepository<Refund>(_context);
+
+        public IGenericRepository<CouponUsage> CouponUsages =>
+            _couponUsages ??= new GenericRepository<CouponUsage>(_context);
 
         public async Task<int> SaveChangesAsync()
         {

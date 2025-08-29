@@ -16,6 +16,9 @@ namespace ElectronicsStore.Core.DTOs.Cart
         public bool IsAvailable { get; set; }
         public int StockQuantity { get; set; }
         public DateTime CreatedAt { get; set; }
+        
+        // Additional property for mapping compatibility
+        public bool InStock { get; set; }
     }
 
     public class AddToCartDto

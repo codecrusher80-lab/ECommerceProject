@@ -161,6 +161,13 @@ namespace ElectronicsStore.Core.DTOs.Coupon
     {
         [Required]
         public string Code { get; set; } = string.Empty;
+        
+        // Alias for service compatibility
+        public string CouponCode
+        {
+            get => Code;
+            set => Code = value;
+        }
 
         [Required]
         [Range(0.01, double.MaxValue)]
@@ -176,5 +183,9 @@ namespace ElectronicsStore.Core.DTOs.Coupon
         public string Message { get; set; } = string.Empty;
         public decimal DiscountAmount { get; set; }
         public CouponDto? Coupon { get; set; }
+        
+        // Additional properties for service compatibility
+        public string ErrorMessage { get; set; } = string.Empty;
+        public int CouponId { get; set; }
     }
 }

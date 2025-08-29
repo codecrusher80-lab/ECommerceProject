@@ -74,6 +74,12 @@ namespace ElectronicsStore.Core.DTOs.Analytics
         public decimal Sales { get; set; }
         public int Orders { get; set; }
         public decimal Percentage { get; set; }
+        
+        // Additional properties for service compatibility
+        public decimal TotalSales { get; set; }
+        public int TotalQuantity { get; set; }
+        public int TotalOrders { get; set; }
+        public int ProductCount { get; set; }
     }
 
     public class TopSellingProductDto
@@ -124,6 +130,11 @@ namespace ElectronicsStore.Core.DTOs.Analytics
         public decimal CancellationRate { get; set; }
         public decimal AverageProcessingTime { get; set; }
         public List<OrderStatusDto> StatusDistribution { get; set; } = new();
+        
+        // Additional properties for service compatibility
+        public DateTime FromDate { get; set; }
+        public DateTime ToDate { get; set; }
+        public Dictionary<string, int> PaymentMethodDistribution { get; set; } = new();
     }
 
     public class OrderStatusDto

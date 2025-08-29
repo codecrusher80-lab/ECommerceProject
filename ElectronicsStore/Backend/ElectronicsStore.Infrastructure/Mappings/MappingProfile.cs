@@ -146,7 +146,7 @@ namespace ElectronicsStore.Infrastructure.Mappings
             // User Mappings
             CreateMap<User, UserDto>()
                 .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => $"{src.FirstName} {src.LastName}"))
-                .ForMember(dest => dest.Roles, opt => opt.MapFrom(src => src.UserRoles.Select(ur => ur.Role.Name)));
+                .ForMember(dest => dest.Roles, opt => opt.MapFrom(src => src.UserRoles.Select(ur => ur.RoleId)));
 
             CreateMap<RegisterDto, User>()
                 .ForMember(dest => dest.Id, opt => opt.Ignore())

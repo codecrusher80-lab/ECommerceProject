@@ -45,14 +45,41 @@ namespace ElectronicsStore.Core.DTOs.Coupon
         [Range(0, double.MaxValue, ErrorMessage = "Minimum order amount must be positive")]
         public decimal? MinOrderAmount { get; set; }
 
+        /// <summary>
+        /// Alias for MinOrderAmount for service compatibility
+        /// </summary>
+        public decimal? MinimumOrderAmount
+        {
+            get => MinOrderAmount;
+            set => MinOrderAmount = value;
+        }
+
         [Range(0, double.MaxValue, ErrorMessage = "Maximum discount amount must be positive")]
         public decimal? MaxDiscountAmount { get; set; }
+
+        /// <summary>
+        /// Alias for MaxDiscountAmount for service compatibility
+        /// </summary>
+        public decimal? MaximumDiscountAmount
+        {
+            get => MaxDiscountAmount;
+            set => MaxDiscountAmount = value;
+        }
 
         [Required]
         public DateTime ValidFrom { get; set; }
 
         [Required]
         public DateTime ValidTo { get; set; }
+
+        /// <summary>
+        /// Alias for ValidTo for service compatibility
+        /// </summary>
+        public DateTime ValidUntil
+        {
+            get => ValidTo;
+            set => ValidTo = value;
+        }
 
         [Range(1, int.MaxValue, ErrorMessage = "Usage limit must be at least 1")]
         public int? UsageLimit { get; set; }

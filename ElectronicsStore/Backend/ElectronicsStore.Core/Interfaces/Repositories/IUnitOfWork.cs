@@ -19,6 +19,7 @@ namespace ElectronicsStore.Core.Interfaces.Repositories
         IGenericRepository<ProductImage> ProductImages { get; }
         IGenericRepository<ProductAttribute> ProductAttributes { get; }
         IGenericRepository<OrderStatusHistory> OrderStatusHistories { get; }
+        IGenericRepository<Payment> Payments { get; }
 
         Task<int> SaveChangesAsync();
         Task BeginTransactionAsync();

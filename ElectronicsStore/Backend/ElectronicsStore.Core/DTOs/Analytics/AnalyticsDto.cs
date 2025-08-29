@@ -7,9 +7,9 @@ namespace ElectronicsStore.Core.DTOs.Analytics
         public int TotalCustomers { get; set; }
         
         /// <summary>
-        /// Alias for TotalCustomers for backward compatibility
+        /// Settable TotalUsers property for service assignments
         /// </summary>
-        public int TotalUsers => TotalCustomers;
+        public int TotalUsers { get; set; }
         
         public int TotalProducts { get; set; }
         public decimal AverageOrderValue { get; set; }
@@ -24,9 +24,22 @@ namespace ElectronicsStore.Core.DTOs.Analytics
         public decimal TodayRevenue { get; set; }
         public int TodayUsers { get; set; }
         public int TodayProducts { get; set; }
+        
+        // Monthly metrics
         public decimal MonthlyRevenue { get; set; }
         public int MonthlyOrders { get; set; }
         public int MonthlyUsers { get; set; }
+        public int ThisMonthOrders { get; set; }
+        public decimal ThisMonthRevenue { get; set; }
+        
+        // Product metrics
+        public int ActiveProducts { get; set; }
+        
+        // Growth rate metrics
+        public double OrderGrowthRate { get; set; }
+        public double RevenueGrowthRate { get; set; }
+        public double MonthlyOrderGrowthRate { get; set; }
+        public double MonthlyRevenueGrowthRate { get; set; }
     }
 
     public class SalesAnalyticsDto
@@ -37,6 +50,13 @@ namespace ElectronicsStore.Core.DTOs.Analytics
         public List<DailySalesDto> DailySales { get; set; } = new();
         public List<CategorySalesDto> CategorySales { get; set; } = new();
         public List<TopSellingProductDto> TopProducts { get; set; } = new();
+        
+        // Date range properties
+        public DateTime FromDate { get; set; }
+        public DateTime ToDate { get; set; }
+        
+        // Additional metrics
+        public int TotalItems { get; set; }
     }
 
     public class DailySalesDto
@@ -44,6 +64,7 @@ namespace ElectronicsStore.Core.DTOs.Analytics
         public DateTime Date { get; set; }
         public decimal Sales { get; set; }
         public int Orders { get; set; }
+        public int Items { get; set; }
     }
 
     public class CategorySalesDto

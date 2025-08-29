@@ -18,9 +18,16 @@ namespace ElectronicsStore.Core.Entities
 
         public bool IsRead { get; set; } = false;
 
+        public DateTime? ReadAt { get; set; }
+
         public string? ActionUrl { get; set; }
 
         public string? ImageUrl { get; set; }
+
+        /// <summary>
+        /// JSON data for additional notification context
+        /// </summary>
+        public string? Data { get; set; }
 
         // Foreign Key
         [Required]

@@ -26,7 +26,7 @@ namespace ElectronicsStore.Core.DTOs.Common
         /// <summary>
         /// Alias for TotalCount for backward compatibility
         /// </summary>
-        public int TotalItems => TotalCount;
+        public int TotalItems { get; set; }
         
         public int PageNumber { get; set; }
         public int PageSize { get; set; }

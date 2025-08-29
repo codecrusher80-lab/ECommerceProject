@@ -156,6 +156,21 @@ namespace ElectronicsStore.Core.DTOs.User
         public UserPreferencesDto? Preferences { get; set; }
 
         /// <summary>
+        /// User join/registration date
+        /// </summary>
+        public DateTime JoinDate { get; set; }
+
+        /// <summary>
+        /// Total number of orders placed by user
+        /// </summary>
+        public int TotalOrders { get; set; }
+
+        /// <summary>
+        /// Total number of reviews written by user
+        /// </summary>
+        public int TotalReviews { get; set; }
+
+        /// <summary>
         /// User statistics (read-only)
         /// </summary>
         public UserStatsDto? Stats { get; set; }

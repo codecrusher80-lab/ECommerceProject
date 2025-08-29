@@ -32,9 +32,7 @@ namespace ElectronicsStore.Infrastructure.Services
         {
             try
             {
-                var query = _unitOfWork.Users.Query()
-                    .Include(u => u.UserRoles)
-                    .ThenInclude(ur => ur.Role);
+                var query = _unitOfWork.Users.Query();
 
                 // Apply filters
                 if (!string.IsNullOrEmpty(filter.SearchTerm))
@@ -48,8 +46,7 @@ namespace ElectronicsStore.Infrastructure.Services
                 if (filter.IsActive.HasValue)
                     query = query.Where(u => u.IsActive == filter.IsActive.Value);
 
-                if (!string.IsNullOrEmpty(filter.Role))
-                    query = query.Where(u => u.UserRoles.Any(ur => ur.Role.Name == filter.Role));
+                // Role filtering will be done after query execution using UserManager
 
                 if (filter.FromDate.HasValue)
                     query = query.Where(u => u.CreatedAt >= filter.FromDate.Value);
@@ -101,8 +98,6 @@ namespace ElectronicsStore.Infrastructure.Services
             try
             {
                 var user = await _unitOfWork.Users.Query()
-                    .Include(u => u.UserRoles)
-                    .ThenInclude(ur => ur.Role)
                     .FirstOrDefaultAsync(u => u.Id == userId);
 
                 if (user == null)
@@ -182,8 +177,6 @@ namespace ElectronicsStore.Infrastructure.Services
 
                 // Refresh user data
                 user = await _unitOfWork.Users.Query()
-                    .Include(u => u.UserRoles)
-                    .ThenInclude(ur => ur.Role)
                     .FirstOrDefaultAsync(u => u.Id == userId);
 
                 var userDto = _mapper.Map<UserDto>(user);

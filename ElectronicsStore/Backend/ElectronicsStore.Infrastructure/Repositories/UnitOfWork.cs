@@ -25,6 +25,7 @@ namespace ElectronicsStore.Infrastructure.Repositories
         private IGenericRepository<ProductImage>? _productImages;
         private IGenericRepository<ProductAttribute>? _productAttributes;
         private IGenericRepository<OrderStatusHistory>? _orderStatusHistories;
+        private IGenericRepository<Payment>? _payments;
 
         public UnitOfWork(ApplicationDbContext context)
         {
@@ -75,6 +76,9 @@ namespace ElectronicsStore.Infrastructure.Repositories
 
         public IGenericRepository<OrderStatusHistory> OrderStatusHistories =>
             _orderStatusHistories ??= new GenericRepository<OrderStatusHistory>(_context);
+
+        public IGenericRepository<Payment> Payments =>
+            _payments ??= new GenericRepository<Payment>(_context);
 
         public async Task<int> SaveChangesAsync()
         {

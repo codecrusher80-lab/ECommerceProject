@@ -167,6 +167,21 @@ namespace ElectronicsStore.Core.DTOs.Payment
 
         [StringLength(200, ErrorMessage = "Cancel URL cannot exceed 200 characters")]
         public string? CancelUrl { get; set; }
+
+        [StringLength(100, ErrorMessage = "Order number cannot exceed 100 characters")]
+        public string? OrderNumber { get; set; }
+
+        [Required(ErrorMessage = "User ID is required")]
+        public string UserId { get; set; } = string.Empty;
+
+        [StringLength(100, ErrorMessage = "Customer name cannot exceed 100 characters")]
+        public string? CustomerName { get; set; }
+
+        [EmailAddress(ErrorMessage = "Invalid customer email format")]
+        public string? CustomerEmail { get; set; }
+
+        [Phone(ErrorMessage = "Invalid customer phone format")]
+        public string? CustomerPhone { get; set; }
     }
 
     public class PaymentOrderDto
@@ -183,6 +198,12 @@ namespace ElectronicsStore.Core.DTOs.Payment
         public DateTime CreatedAt { get; set; }
         public DateTime? ExpiresAt { get; set; }
         public Dictionary<string, object>? Metadata { get; set; }
+        public string? RazorpayOrderId { get; set; }
+        public string? KeyId { get; set; }
+        public string? OrderNumber { get; set; }
+        public string? CustomerName { get; set; }
+        public string? CustomerEmail { get; set; }
+        public string? CustomerPhone { get; set; }
     }
 
     public class VerifyPaymentDto

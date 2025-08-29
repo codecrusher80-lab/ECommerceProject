@@ -12,6 +12,7 @@ namespace ElectronicsStore.Core.DTOs.Notification
         public bool IsRead { get; set; }
         public string? ActionUrl { get; set; }
         public string? ImageUrl { get; set; }
+        public string? Data { get; set; }
         public DateTime CreatedAt { get; set; }
     }
 
@@ -30,6 +31,11 @@ namespace ElectronicsStore.Core.DTOs.Notification
 
         public string? ActionUrl { get; set; }
         public string? ImageUrl { get; set; }
+
+        /// <summary>
+        /// JSON data for additional notification context
+        /// </summary>
+        public string? Data { get; set; }
 
         [Required]
         public string UserId { get; set; } = string.Empty;

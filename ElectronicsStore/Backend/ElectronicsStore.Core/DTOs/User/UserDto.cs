@@ -42,6 +42,11 @@ namespace ElectronicsStore.Core.DTOs.User
 
         [Required]
         public List<string> Roles { get; set; } = new();
+
+        /// <summary>
+        /// Single role for backward compatibility (uses first role from Roles list)
+        /// </summary>
+        public string Role => Roles.FirstOrDefault() ?? string.Empty;
     }
 
     public class UpdateUserStatusDto

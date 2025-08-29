@@ -27,8 +27,26 @@ namespace ElectronicsStore.Core.Entities
         [Column(TypeName = "decimal(18,2)")]
         public decimal? MinOrderAmount { get; set; }
 
+        /// <summary>
+        /// Alias for MinOrderAmount for service compatibility
+        /// </summary>
+        public decimal? MinimumOrderAmount
+        {
+            get => MinOrderAmount;
+            set => MinOrderAmount = value;
+        }
+
         [Column(TypeName = "decimal(18,2)")]
         public decimal? MaxDiscountAmount { get; set; }
+
+        /// <summary>
+        /// Alias for MaxDiscountAmount for service compatibility  
+        /// </summary>
+        public decimal? MaximumDiscountAmount
+        {
+            get => MaxDiscountAmount;
+            set => MaxDiscountAmount = value;
+        }
 
         [Required]
         public DateTime ValidFrom { get; set; }
@@ -46,5 +64,6 @@ namespace ElectronicsStore.Core.Entities
 
         // Navigation Properties
         public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
+        public virtual ICollection<CouponUsage> CouponUsages { get; set; } = new List<CouponUsage>();
     }
 }

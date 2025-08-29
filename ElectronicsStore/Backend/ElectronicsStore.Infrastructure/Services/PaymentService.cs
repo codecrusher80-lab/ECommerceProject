@@ -54,7 +54,7 @@ namespace ElectronicsStore.Infrastructure.Services
                 var razorpayOrder = _razorpayClient.Order.Create(orderOptions);
 
                 // Save payment record
-                var payment = new Payment
+                var payment = new Core.Entities.Payment
                 {
                     OrderId = createPaymentOrderDto.OrderId,
                     UserId = createPaymentOrderDto.UserId,

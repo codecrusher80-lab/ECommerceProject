@@ -20,6 +20,9 @@ namespace ElectronicsStore.Core.DTOs.Coupon
         public int? UsageLimitPerUser { get; set; }
         public bool IsActive { get; set; }
         public DateTime CreatedAt { get; set; }
+        
+        // Additional properties for mapping compatibility
+        public int RemainingUses { get; set; }
     }
 
     public class CreateCouponDto

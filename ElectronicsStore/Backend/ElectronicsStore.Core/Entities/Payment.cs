@@ -7,7 +7,7 @@ namespace ElectronicsStore.Core.Entities
     public class Payment : BaseEntity
     {
         [Required]
-        public Guid OrderId { get; set; }
+        public int OrderId { get; set; }
 
         [Required]
         public string UserId { get; set; } = string.Empty;

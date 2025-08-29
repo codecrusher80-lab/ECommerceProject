@@ -83,6 +83,8 @@ namespace ElectronicsStore.Infrastructure.Repositories
         public IGenericRepository<OrderStatusHistory> OrderStatusHistories =>
             _orderStatusHistories ??= new GenericRepository<OrderStatusHistory>(_context);
 
+        public IGenericRepository<OrderStatusHistory> OrderStatusHistory => OrderStatusHistories;
+
         public IGenericRepository<Payment> Payments =>
             _payments ??= new GenericRepository<Payment>(_context);
 

@@ -11,6 +11,7 @@ namespace ElectronicsStore.Core.Interfaces.Repositories
         IGenericRepository<Order> Orders { get; }
         IGenericRepository<OrderItem> OrderItems { get; }
         IGenericRepository<OrderStatusHistory> OrderStatusHistories { get; }
+        IGenericRepository<OrderStatusHistory> OrderStatusHistory { get; }
         IGenericRepository<CartItem> CartItems { get; }
         IGenericRepository<WishlistItem> WishlistItems { get; }
         IGenericRepository<Review> Reviews { get; }

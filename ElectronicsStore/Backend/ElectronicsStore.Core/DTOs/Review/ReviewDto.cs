@@ -17,6 +17,10 @@ namespace ElectronicsStore.Core.DTOs.Review
         public bool IsApproved { get; set; }
         public int HelpfulCount { get; set; }
         public DateTime CreatedAt { get; set; }
+        
+        // Additional properties for mapping compatibility
+        public bool IsHelpful { get; set; }
+        public bool CanEdit { get; set; }
     }
 
     public class CreateReviewDto

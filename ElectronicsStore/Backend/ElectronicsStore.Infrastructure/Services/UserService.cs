@@ -258,7 +258,7 @@ namespace ElectronicsStore.Infrastructure.Services
                     JoinDate = user.CreatedAt,
                     TotalOrders = user.Orders.Count,
                     TotalReviews = user.Reviews.Count,
-                    Addresses = _mapper.Map<List<AddressDto>>(user.Addresses)
+                    Addresses = _mapper.Map<List<UserAddressDto>>(user.Addresses)
                 };
 
                 return ApiResponse<UserProfileDto>.SuccessResponse(profile);

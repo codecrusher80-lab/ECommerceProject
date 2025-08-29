@@ -104,5 +104,8 @@ namespace ElectronicsStore.Core.Entities
         public virtual Address? BillingAddress { get; set; }
         public virtual ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
         public virtual ICollection<OrderStatusHistory> OrderStatusHistories { get; set; } = new List<OrderStatusHistory>();
+        
+        // Alias for mapping compatibility
+        public virtual ICollection<OrderStatusHistory> StatusHistory => OrderStatusHistories;
     }
 }

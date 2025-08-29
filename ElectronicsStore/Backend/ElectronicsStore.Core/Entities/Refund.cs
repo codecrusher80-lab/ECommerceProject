@@ -10,7 +10,7 @@ namespace ElectronicsStore.Core.Entities
         public Guid PaymentId { get; set; }
         
         [Required]
-        public Guid OrderId { get; set; }
+        public int OrderId { get; set; }
         
         [Required]
         [Column(TypeName = "decimal(18,2)")]

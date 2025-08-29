@@ -16,6 +16,9 @@ namespace ElectronicsStore.Core.DTOs.User
         public DateTime CreatedAt { get; set; }
         public DateTime? LastLoginAt { get; set; }
         public List<string> Roles { get; set; } = new();
+        
+        // Additional properties for mapping compatibility
+        public string FullName => $"{FirstName} {LastName}".Trim();
     }
 
     public class UpdateUserDto

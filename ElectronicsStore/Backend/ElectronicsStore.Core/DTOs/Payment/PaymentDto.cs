@@ -7,7 +7,7 @@ namespace ElectronicsStore.Core.DTOs.Payment
     {
         public Guid Id { get; set; }
 
-        public Guid OrderId { get; set; }
+        public int OrderId { get; set; }
 
         [Required(ErrorMessage = "Payment method is required")]
         [EnumDataType(typeof(PaymentMethod), ErrorMessage = "Invalid payment method")]
@@ -93,6 +93,9 @@ namespace ElectronicsStore.Core.DTOs.Payment
         public string? Description { get; set; }
 
         public List<PaymentAttemptDto>? PaymentAttempts { get; set; }
+        
+        // Additional properties for mapping compatibility
+        public string? OrderNumber { get; set; }
     }
 
     public class PaymentAttemptDto
@@ -137,7 +140,7 @@ namespace ElectronicsStore.Core.DTOs.Payment
     public class CreatePaymentOrderDto
     {
         [Required(ErrorMessage = "Order ID is required")]
-        public Guid OrderId { get; set; }
+        public int OrderId { get; set; }
 
         [Required(ErrorMessage = "Payment method is required")]
         [EnumDataType(typeof(PaymentMethod), ErrorMessage = "Invalid payment method")]
@@ -187,7 +190,7 @@ namespace ElectronicsStore.Core.DTOs.Payment
     public class PaymentOrderDto
     {
         public int Id { get; set; }
-        public Guid OrderId { get; set; }
+        public int OrderId { get; set; }
         public PaymentMethod PaymentMethod { get; set; }
         public decimal Amount { get; set; }
         public string Currency { get; set; } = string.Empty;
@@ -286,10 +289,15 @@ namespace ElectronicsStore.Core.DTOs.Payment
         public DateTime CreatedAt { get; set; }
         public DateTime? ProcessedAt { get; set; }
         public Dictionary<string, object>? RefundMetadata { get; set; }
+        
+        // Additional properties for mapping compatibility
+        public string? OrderNumber { get; set; }
+        public string? PaymentMethod { get; set; }
     }
 
     public class PaymentMethodDto
     {
+        public int Id { get; set; }
         public PaymentMethod Method { get; set; }
         public string Name { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
@@ -298,6 +306,10 @@ namespace ElectronicsStore.Core.DTOs.Payment
         public decimal? MaxAmount { get; set; }
         public List<string> SupportedCurrencies { get; set; } = new List<string>();
         public Dictionary<string, object>? Configuration { get; set; }
+        
+        // Additional properties for service compatibility
+        public string? Icon { get; set; }
+        public List<string> SupportedNetworks { get; set; } = new List<string>();
     }
 
     public class PaymentStatusDto

@@ -2,6 +2,7 @@ using AutoMapper;
 using ElectronicsStore.Core.DTOs.Common;
 using ElectronicsStore.Core.DTOs.Payment;
 using ElectronicsStore.Core.Entities;
+using ElectronicsStore.Core.Enums;
 using ElectronicsStore.Core.Interfaces.Repositories;
 using ElectronicsStore.Core.Interfaces.Services;
 using Microsoft.Extensions.Configuration;
@@ -111,12 +112,12 @@ namespace ElectronicsStore.Infrastructure.Services
 
                 var verificationResult = new PaymentVerificationDto
                 {
-                    PaymentId = payment.Id,
+                    PaymentId = payment.Id.ToString(),
                     IsVerified = isValidSignature,
                     RazorpayPaymentId = verifyPaymentDto.RazorpayPaymentId,
                     RazorpayOrderId = verifyPaymentDto.RazorpayOrderId,
                     Amount = payment.Amount,
-                    Status = isValidSignature ? "Success" : "Failed"
+                    Status = isValidSignature ? PaymentStatus.Completed : PaymentStatus.Failed
                 };
 
                 if (isValidSignature)
@@ -208,7 +209,7 @@ namespace ElectronicsStore.Infrastructure.Services
                     .Refund(refundOptions);
 
                 // Save refund record
-                var refund = new Refund
+                var refund = new ElectronicsStore.Core.Entities.Refund
                 {
                     PaymentId = payment.Id,
                     OrderId = payment.OrderId,

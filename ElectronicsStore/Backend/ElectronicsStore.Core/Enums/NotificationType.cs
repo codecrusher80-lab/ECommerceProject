@@ -7,6 +7,8 @@ namespace ElectronicsStore.Core.Enums
         ProductUpdate = 3,
         Promotional = 4,
         System = 5,
-        Welcome = 6
+        Welcome = 6,
+        ReviewApproved = 7,
+        ReviewRejected = 8
     }
 }

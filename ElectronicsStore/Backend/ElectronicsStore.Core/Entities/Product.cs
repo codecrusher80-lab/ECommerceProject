@@ -64,6 +64,9 @@ namespace ElectronicsStore.Core.Entities
         public virtual Brand Brand { get; set; } = null!;
         public virtual ICollection<ProductImage> ProductImages { get; set; } = new List<ProductImage>();
         public virtual ICollection<Review> Reviews { get; set; } = new List<Review>();
+        
+        // Additional properties for mapping compatibility
+        public string? ImageUrl => ProductImages?.FirstOrDefault()?.ImageUrl;
         public virtual ICollection<CartItem> CartItems { get; set; } = new List<CartItem>();
         public virtual ICollection<WishlistItem> WishlistItems { get; set; } = new List<WishlistItem>();
         public virtual ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();

@@ -18,6 +18,8 @@ namespace ElectronicsStore.Core.Entities
         public bool IsVerifiedPurchase { get; set; } = false;
 
         public bool IsApproved { get; set; } = true;
+        
+        public DateTime? ApprovedAt { get; set; }
 
         public int HelpfulCount { get; set; } = 0;
 

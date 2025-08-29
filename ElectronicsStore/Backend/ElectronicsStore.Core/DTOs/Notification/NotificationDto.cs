@@ -14,6 +14,9 @@ namespace ElectronicsStore.Core.DTOs.Notification
         public string? ImageUrl { get; set; }
         public string? Data { get; set; }
         public DateTime CreatedAt { get; set; }
+        
+        // Additional properties for mapping compatibility
+        public string TimeAgo { get; set; } = string.Empty;
     }
 
     public class CreateNotificationDto

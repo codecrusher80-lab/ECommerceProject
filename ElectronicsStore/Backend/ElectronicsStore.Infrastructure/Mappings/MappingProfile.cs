@@ -8,6 +8,7 @@ using ElectronicsStore.Core.DTOs.Review;
 using ElectronicsStore.Core.DTOs.Coupon;
 using ElectronicsStore.Core.DTOs.Notification;
 using ElectronicsStore.Core.DTOs.Payment;
+using ElectronicsStore.Core.DTOs.Auth;
 using ElectronicsStore.Core.DTOs.Analytics;
 using ElectronicsStore.Core.DTOs.Common;
 using ElectronicsStore.Core.Entities;

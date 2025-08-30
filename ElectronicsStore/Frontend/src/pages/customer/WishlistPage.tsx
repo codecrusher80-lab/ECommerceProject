@@ -52,7 +52,7 @@ type ViewMode = 'grid' | 'list';
 const WishlistPage: React.FC = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const { items: wishlistItems, loading, error } = useAppSelector(state => state.wishlist);
+  const { items: wishlistItems, isLoading, error } = useAppSelector(state => state.wishlist);
   const { isAuthenticated } = useAppSelector(state => state.auth);
   
   const [selectedItems, setSelectedItems] = useState<number[]>([]);
@@ -74,7 +74,12 @@ const WishlistPage: React.FC = () => {
   const handleAddToCart = (item: WishlistItem, quantity: number = 1) => {
     dispatch(addToCart({
       productId: item.productId,
-      quantity
+      quantity,
+      id: 0,
+      productName: '',
+      priceAtTime: 0,
+      currentPrice: 0,
+      createdAt: ''
     }));
   };
 
@@ -117,11 +122,11 @@ const WishlistPage: React.FC = () => {
 
   const handleShare = (item: WishlistItem) => {
     const url = `${window.location.origin}/products/${item.productId}`;
-    const text = `Check out this product: ${item.product.name}`;
+    const text = `Check out this product: ${item.product?.name}`;
     
     if (navigator.share) {
       navigator.share({
-        title: item.product.name,
+        title: item.product?.name,
         text: text,
         url: url,
       });
@@ -134,18 +139,6 @@ const WishlistPage: React.FC = () => {
   const sortedItems = React.useMemo(() => {
     const sorted = [...wishlistItems].sort((a, b) => {
       switch (sortBy) {
-        case 'name':
-          return sortOrder === 'asc' 
-            ? a.product.name.localeCompare(b.product.name)
-            : b.product.name.localeCompare(a.product.name);
-        case 'price':
-          return sortOrder === 'asc'
-            ? a.product.price - b.product.price
-            : b.product.price - a.product.price;
-        case 'rating':
-          return sortOrder === 'asc'
-            ? a.product.averageRating - b.product.averageRating
-            : b.product.averageRating - a.product.averageRating;
         case 'added_date':
         default:
           return sortOrder === 'asc'
@@ -195,9 +188,9 @@ const WishlistPage: React.FC = () => {
         </Alert>
       )}
 
-      {loading && <LinearProgress sx={{ mb: 2 }} />}
+      {isLoading && <LinearProgress sx={{ mb: 2 }} />}
 
-      {wishlistItems.length === 0 && !loading ? (
+      {wishlistItems.length === 0 && !isLoading ? (
         <Paper sx={{ p: 6, textAlign: 'center' }}>
           <FavoriteBorder sx={{ fontSize: 80, color: 'grey.400', mb: 2 }} />
           <Typography variant="h5" gutterBottom>
@@ -346,8 +339,8 @@ const WishlistPage: React.FC = () => {
                       objectFit: 'contain',
                       cursor: 'pointer'
                     }}
-                    image={item.product.images?.[0]?.imageUrl || '/placeholder-product.png'}
-                    alt={item.product.name}
+                    image={item.product?.images?.[0]?.imageUrl || '/placeholder-product.png'}
+                    alt={item.product?.name}
                     onClick={() => navigate(`/products/${item.productId}`)}
                   />
 
@@ -363,25 +356,25 @@ const WishlistPage: React.FC = () => {
                         }}
                         onClick={() => navigate(`/products/${item.productId}`)}
                       >
-                        {item.product.name}
+                        {item.product?.name}
                       </Typography>
                       
                       <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-                        {item.product.brand?.name}
+                        {item.product?.brand?.name}
                       </Typography>
 
                       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
                         <Star sx={{ color: 'gold', fontSize: 18 }} />
                         <Typography variant="body2">
-                          {item.product.averageRating.toFixed(1)} ({item.product.totalReviews} reviews)
+                          {item.product?.averageRating.toFixed(1)} ({item.product?.totalReviews} reviews)
                         </Typography>
                       </Box>
 
                       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
                         <Typography variant="h6" color="primary.main">
-                          ₹{item.product.discountPrice || item.product.price.toLocaleString()}
+                          ₹{item.product?.discountPrice || item.product?.price.toLocaleString()}
                         </Typography>
-                        {item.product.discountPrice && (
+                        {item.product?.discountPrice && (
                           <Typography 
                             variant="body2" 
                             sx={{ textDecoration: 'line-through', color: 'text.secondary' }}
@@ -389,7 +382,7 @@ const WishlistPage: React.FC = () => {
                             ₹{item.product.price.toLocaleString()}
                           </Typography>
                         )}
-                        {item.product.discountPrice && (
+                        {item.product?.discountPrice && (
                           <Chip 
                             label={`${Math.round((1 - item.product.discountPrice / item.product.price) * 100)}% OFF`}
                             color="secondary" 
@@ -402,10 +395,10 @@ const WishlistPage: React.FC = () => {
                         Added on {format(new Date(item.createdAt), 'MMM dd, yyyy')}
                       </Typography>
 
-                      {item.product.stockQuantity === 0 && (
+                      {item.product?.stockQuantity === 0 && (
                         <Chip label="Out of Stock" color="error" size="small" sx={{ mt: 1 }} />
                       )}
-                      {item.product.stockQuantity > 0 && item.product.stockQuantity <= 5 && (
+                      {item.product?.stockQuantity ?? 0 > 0 && item.product?.stockQuantity ?? 0 <= 5 && (
                         <Chip label="Low Stock" color="warning" size="small" sx={{ mt: 1 }} />
                       )}
                     </CardContent>
@@ -415,7 +408,7 @@ const WishlistPage: React.FC = () => {
                         variant="contained"
                         startIcon={<ShoppingCart />}
                         onClick={() => handleAddToCart(item)}
-                        disabled={item.product.stockQuantity === 0}
+                        disabled={item.product?.stockQuantity === 0}
                         size="small"
                         fullWidth={viewMode === 'grid'}
                       >
@@ -468,7 +461,7 @@ const WishlistPage: React.FC = () => {
         <DialogTitle>Remove from Wishlist</DialogTitle>
         <DialogContent>
           <Typography>
-            Are you sure you want to remove "{itemToDelete?.product.name}" from your wishlist?
+            Are you sure you want to remove "{itemToDelete?.product?.name}" from your wishlist?
           </Typography>
         </DialogContent>
         <DialogActions>

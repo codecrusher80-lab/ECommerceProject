@@ -392,7 +392,7 @@ const CheckoutPage: React.FC = () => {
       {items.map((item) => (
         <Box key={item.id} sx={{ display: 'flex', gap: 2, mb: 2, p: 2, bgcolor: 'grey.50', borderRadius: 1 }}>
           <Avatar
-            src={item.imageUrl}
+            src={item.productImage}
             alt={item.productName}
             variant="rounded"
             sx={{ width: 80, height: 80 }}

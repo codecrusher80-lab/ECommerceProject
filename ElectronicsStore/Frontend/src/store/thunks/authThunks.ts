@@ -1,24 +1,25 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { authService } from '../../services/authService';
+import authService from '../../services/authService';
 
-export interface LoginCredentials {
+export interface LoginRequest {
   email: string;
   password: string;
+  rememberMe: boolean;  // required
 }
 
-export interface RegisterData {
+export interface RegisterRequest {
   firstName: string;
   lastName: string;
   email: string;
   password: string;
   confirmPassword: string;
-  phoneNumber?: string;
+  phoneNumber: string;  // required
 }
 
 // Login user
 export const loginUser = createAsyncThunk(
   'auth/loginUser',
-  async (credentials: LoginCredentials, { rejectWithValue }) => {
+  async (credentials: LoginRequest, { rejectWithValue }) => {
     try {
       const response = await authService.login(credentials);
       return response.data;
@@ -31,7 +32,7 @@ export const loginUser = createAsyncThunk(
 // Register user
 export const registerUser = createAsyncThunk(
   'auth/registerUser',
-  async (userData: RegisterData, { rejectWithValue }) => {
+  async (userData: RegisterRequest, { rejectWithValue }) => {
     try {
       const response = await authService.register(userData);
       return response.data;

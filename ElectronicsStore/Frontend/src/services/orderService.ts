@@ -1,4 +1,5 @@
-import { apiClient } from './apiClient';
+import apiClient from './apiClient';
+import { OrderFilters } from '../types';
 
 export interface OrderItem {
   id: string;
@@ -120,6 +121,8 @@ export interface OrderSearchParams {
 }
 
 class OrderService {
+
+
   /**
    * Create a new order
    */

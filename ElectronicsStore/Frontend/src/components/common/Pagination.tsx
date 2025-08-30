@@ -70,10 +70,10 @@ const Pagination: React.FC<PaginationProps> = ({
 
   const calculateItemRange = () => {
     if (!totalItems) return null;
-    
+
     const start = (currentPage - 1) * itemsPerPage + 1;
     const end = Math.min(currentPage * itemsPerPage, totalItems);
-    
+
     return { start, end };
   };
 
@@ -109,11 +109,11 @@ const Pagination: React.FC<PaginationProps> = ({
           >
             <PrevIcon />
           </IconButton>
-          
+
           <Typography variant="body2" sx={{ mx: 2 }}>
             {currentPage} / {totalPages}
           </Typography>
-          
+
           <IconButton
             onClick={() => onPageChange(currentPage + 1)}
             disabled={currentPage >= totalPages || disabled}
@@ -141,7 +141,7 @@ const Pagination: React.FC<PaginationProps> = ({
           count={totalPages}
           page={currentPage}
           onChange={handlePageChange}
-          color={color}
+          color={color === 'standard' ? 'primary' : color}
           size={size}
           disabled={disabled}
           showFirstButton={showFirstLast}
@@ -230,27 +230,32 @@ const Pagination: React.FC<PaginationProps> = ({
           count={totalPages}
           page={currentPage}
           onChange={handlePageChange}
-          color={color}
+          color={color === 'standard' ? 'primary' : color}
           size={size}
           disabled={disabled}
           showFirstButton={false}
           showLastButton={false}
           siblingCount={isMobile ? 0 : 1}
           boundaryCount={1}
-          renderItem={(item) => (
-            <PaginationItem
-              {...item}
-              sx={{
-                '&.Mui-selected': {
-                  backgroundColor: theme.palette[color].main,
-                  color: theme.palette[color].contrastText,
-                  '&:hover': {
-                    backgroundColor: theme.palette[color].dark,
-                  }
-                }
-              }}
-            />
-          )}
+          renderItem={(item) => {
+            const isStandard = color === 'standard';
+            return (
+              <PaginationItem
+                {...item}
+                sx={{
+                  '&.Mui-selected': isStandard
+                    ? { fontWeight: 'bold' }
+                    : {
+                        backgroundColor: theme.palette[color].main,
+                        color: theme.palette[color].contrastText,
+                        '&:hover': {
+                          backgroundColor: theme.palette[color].dark
+                        }
+                      }
+                }}
+              />
+            );
+          }}
         />
 
         {showFirstLast && (

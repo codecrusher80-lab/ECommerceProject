@@ -36,8 +36,7 @@ import {
   List,
   ListItem,
   ListItemIcon,
-  ListItemText,
-  ListItemSecondary
+  ListItemText
 } from '@mui/material';
 import {
   Edit,
@@ -58,7 +57,7 @@ import {
   VisibilityOff
 } from '@mui/icons-material';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux';
-import { updateProfile, changePassword } from '../../store/slices/authSlice';
+import { updateUserProfile, changePassword } from '../../store/slices/authSlice';
 import { Address, Order, INDIAN_STATES } from '../../types';
 import { format } from 'date-fns';
 import { useNavigate } from 'react-router-dom';
@@ -164,7 +163,7 @@ const ProfilePage: React.FC = () => {
 
   const handleProfileUpdate = async () => {
     try {
-      await dispatch(updateProfile(profileData)).unwrap();
+      await dispatch(updateUserProfile(profileData)).unwrap();
       setEditing(false);
       setSuccess('Profile updated successfully!');
       setTimeout(() => setSuccess(null), 5000);

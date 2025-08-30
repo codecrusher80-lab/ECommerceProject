@@ -44,6 +44,13 @@ class AuthService {
     const response = await axios.post(`${this.baseURL}${ENDPOINTS.AUTH.RESEND_CONFIRMATION}`, { email });
     return response.data;
   }
+  async refreshToken() {
+    return await axios.post(`${this.baseURL}${ENDPOINTS.AUTH.REFRESH_TOKEN}`);
+  }
+
+  async getCurrentUser() {
+    return await axios.post(`${this.baseURL}${ENDPOINTS.AUTH.GET_CURRENT_USER}`);
+  }
 }
 
 export default new AuthService();

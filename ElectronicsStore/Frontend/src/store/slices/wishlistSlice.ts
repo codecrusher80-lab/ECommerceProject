@@ -1,5 +1,6 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { WishlistItem } from '../../types';
+import wishlistService from '../../services/wishlistService';
 
 interface WishlistState {
   items: WishlistItem[];
@@ -12,6 +13,28 @@ const initialState: WishlistState = {
   isLoading: false,
   error: null,
 };
+
+// Async thunk to fetch wishlist
+export const fetchWishlist = createAsyncThunk<
+  WishlistItem[],        // Return type
+  void,                  // Argument type
+  { rejectValue: string } // ThunkAPI type
+>(
+  'wishlist/fetchWishlist',
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await wishlistService.getWishlistItems();
+
+      if (!response || !response.data) {
+        return rejectWithValue('No wishlist items found');
+      }
+
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(error.message || 'Failed to fetch wishlist');
+    }
+  }
+);
 
 const wishlistSlice = createSlice({
   name: 'wishlist',
@@ -38,6 +61,21 @@ const wishlistSlice = createSlice({
     setError: (state, action: PayloadAction<string | null>) => {
       state.error = action.payload;
     },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchWishlist.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(fetchWishlist.fulfilled, (state, action: PayloadAction<WishlistItem[]>) => {
+        state.items = action.payload;
+        state.isLoading = false;
+      })
+      .addCase(fetchWishlist.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload as string;
+      });
   },
 });
 

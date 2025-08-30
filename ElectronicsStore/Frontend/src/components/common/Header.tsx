@@ -39,7 +39,7 @@ import {
   Category as CategoryIcon,
   Home as HomeIcon
 } from '@mui/icons-material';
-import { RootState } from '../../store';
+import { RootState, AppDispatch } from '../../store/store';
 import { logout } from '../../store/slices/authSlice';
 import { clearCart } from '../../store/slices/cartSlice';
 import { clearWishlist } from '../../store/slices/wishlistSlice';
@@ -53,7 +53,7 @@ interface HeaderProps {
 const Header: React.FC<HeaderProps> = ({ onCategoryMenuOpen, showCategoryMenu = true }) => {
   const navigate = useNavigate();
   const location = useLocation();
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
@@ -270,11 +270,11 @@ const Header: React.FC<HeaderProps> = ({ onCategoryMenuOpen, showCategoryMenu = 
       {isAuthenticated ? (
         <IconButton onClick={handleAccountMenuOpen} sx={{ color: 'white' }}>
           <Avatar
-            src={user?.avatar}
-            alt={user?.name}
+            src={user?.profileImage}
+            alt={user?.firstName}
             sx={{ width: 32, height: 32 }}
           >
-            {user?.name?.charAt(0)}
+            {user?.firstName?.charAt(0)}
           </Avatar>
         </IconButton>
       ) : (
@@ -469,7 +469,7 @@ const Header: React.FC<HeaderProps> = ({ onCategoryMenuOpen, showCategoryMenu = 
       >
         <Box sx={{ p: 2, minWidth: 200 }}>
           <Typography variant="subtitle1" fontWeight="bold">
-            {user?.name}
+            {user?.firstName}
           </Typography>
           <Typography variant="body2" color="text.secondary">
             {user?.email}

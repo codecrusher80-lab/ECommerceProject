@@ -1,4 +1,4 @@
-import { apiClient } from './apiClient';
+import apiClient from './apiClient';
 import { User, PagedResult, PaginationParams, ApiResponse } from '../types';
 
 export interface UserFilters extends PaginationParams {

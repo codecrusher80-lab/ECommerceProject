@@ -1,4 +1,6 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import {
   Box,
   Container,
@@ -10,60 +12,56 @@ import {
   Button,
   Paper,
   Chip,
+  Rating,
+  Skeleton,
 } from '@mui/material';
 import {
   LocalShipping,
   Security,
   Support,
   Replay,
+  ShoppingCart,
+  FavoriteBorder,
 } from '@mui/icons-material';
+import { AppDispatch, RootState } from '../../store/store';
+import { fetchFeaturedProducts, fetchCategories } from '../../store/thunks/productThunks';
+import LoadingSpinner from '../../components/common/LoadingSpinner';
 
 const HomePage: React.FC = () => {
-  const featuredCategories = [
-    { id: 1, name: 'Smartphones', image: '/images/smartphones.jpg', count: 150 },
-    { id: 2, name: 'Laptops', image: '/images/laptops.jpg', count: 85 },
-    { id: 3, name: 'Headphones', image: '/images/headphones.jpg', count: 120 },
-    { id: 4, name: 'Smart Watches', image: '/images/smartwatches.jpg', count: 75 },
-  ];
+  const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate();
+  const { 
+    featuredProducts, 
+    categories, 
+    isFeaturedLoading, 
+    isCategoriesLoading, 
+    error 
+  } = useSelector((state: RootState) => state.products);
 
-  const featuredProducts = [
-    {
-      id: 1,
-      name: 'iPhone 15 Pro',
-      price: 134900,
-      originalPrice: 144900,
-      image: '/images/iphone15pro.jpg',
-      rating: 4.8,
-      discount: '7% OFF',
-    },
-    {
-      id: 2,
-      name: 'Samsung Galaxy S24',
-      price: 79999,
-      originalPrice: 89999,
-      image: '/images/galaxys24.jpg',
-      rating: 4.6,
-      discount: '11% OFF',
-    },
-    {
-      id: 3,
-      name: 'MacBook Pro M3',
-      price: 199900,
-      originalPrice: 219900,
-      image: '/images/macbookpro.jpg',
-      rating: 4.9,
-      discount: '9% OFF',
-    },
-    {
-      id: 4,
-      name: 'AirPods Pro 2',
-      price: 24900,
-      originalPrice: 27900,
-      image: '/images/airpodspro.jpg',
-      rating: 4.7,
-      discount: '11% OFF',
-    },
-  ];
+  useEffect(() => {
+    dispatch(fetchFeaturedProducts());
+    dispatch(fetchCategories());
+  }, [dispatch]);
+
+  const handleProductClick = (productId: number) => {
+    navigate(`/products/${productId}`);
+  };
+
+  const handleCategoryClick = (categoryId: number) => {
+    navigate(`/products?category=${categoryId}`);
+  };
+
+  const formatPrice = (price: number) => {
+    return new Intl.NumberFormat('en-IN', {
+      style: 'currency',
+      currency: 'INR',
+    }).format(price);
+  };
+
+  const calculateDiscount = (originalPrice: number, currentPrice: number) => {
+    const discount = ((originalPrice - currentPrice) / originalPrice) * 100;
+    return Math.round(discount);
+  };
 
   const features = [
     {
@@ -87,6 +85,25 @@ const HomePage: React.FC = () => {
       description: '7-day hassle-free returns',
     },
   ];
+
+  if (error) {
+    return (
+      <Container>
+        <Box sx={{ textAlign: 'center', py: 8 }}>
+          <Typography variant="h6" color="error">
+            Error loading page: {error}
+          </Typography>
+          <Button 
+            variant="contained" 
+            onClick={() => window.location.reload()}
+            sx={{ mt: 2 }}
+          >
+            Retry
+          </Button>
+        </Box>
+      </Container>
+    );
+  }
 
   return (
     <Box>
@@ -176,35 +193,50 @@ const HomePage: React.FC = () => {
           Shop by Category
         </Typography>
         <Grid container spacing={3} sx={{ mb: 6 }}>
-          {featuredCategories.map((category) => (
-            <Grid item xs={12} sm={6} md={3} key={category.id}>
-              <Card
-                sx={{
-                  cursor: 'pointer',
-                  transition: 'all 0.3s ease',
-                  '&:hover': {
-                    transform: 'translateY(-4px)',
-                    boxShadow: 4,
-                  },
-                }}
-              >
-                <CardMedia
-                  component="img"
-                  height="200"
-                  image={category.image}
-                  alt={category.name}
-                />
-                <CardContent>
-                  <Typography variant="h6" gutterBottom>
-                    {category.name}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    {category.count} Products
-                  </Typography>
-                </CardContent>
-              </Card>
-            </Grid>
-          ))}
+          {isCategoriesLoading ? (
+            Array.from({ length: 4 }).map((_, index) => (
+              <Grid item xs={12} sm={6} md={3} key={index}>
+                <Card>
+                  <Skeleton variant="rectangular" height={200} />
+                  <CardContent>
+                    <Skeleton variant="text" height={32} />
+                    <Skeleton variant="text" height={20} width="60%" />
+                  </CardContent>
+                </Card>
+              </Grid>
+            ))
+          ) : (
+            categories.slice(0, 4).map((category) => (
+              <Grid item xs={12} sm={6} md={3} key={category.id}>
+                <Card
+                  onClick={() => handleCategoryClick(category.id)}
+                  sx={{
+                    cursor: 'pointer',
+                    transition: 'all 0.3s ease',
+                    '&:hover': {
+                      transform: 'translateY(-4px)',
+                      boxShadow: 4,
+                    },
+                  }}
+                >
+                  <CardMedia
+                    component="img"
+                    height="200"
+                    image={category.imageUrl || '/images/default-category.jpg'}
+                    alt={category.name}
+                  />
+                  <CardContent>
+                    <Typography variant="h6" gutterBottom>
+                      {category.name}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      {category.description}
+                    </Typography>
+                  </CardContent>
+                </Card>
+              </Grid>
+            ))
+          )}
         </Grid>
 
         {/* Featured Products Section */}
@@ -212,58 +244,114 @@ const HomePage: React.FC = () => {
           Featured Products
         </Typography>
         <Grid container spacing={3} sx={{ mb: 6 }}>
-          {featuredProducts.map((product) => (
-            <Grid item xs={12} sm={6} md={3} key={product.id}>
-              <Card
-                sx={{
-                  cursor: 'pointer',
-                  transition: 'all 0.3s ease',
-                  '&:hover': {
-                    transform: 'translateY(-4px)',
-                    boxShadow: 4,
-                  },
-                }}
-              >
-                <Box sx={{ position: 'relative' }}>
-                  <CardMedia
-                    component="img"
-                    height="250"
-                    image={product.image}
-                    alt={product.name}
-                  />
-                  <Chip
-                    label={product.discount}
-                    color="secondary"
-                    size="small"
+          {isFeaturedLoading ? (
+            Array.from({ length: 4 }).map((_, index) => (
+              <Grid item xs={12} sm={6} md={3} key={index}>
+                <Card>
+                  <Skeleton variant="rectangular" height={250} />
+                  <CardContent>
+                    <Skeleton variant="text" height={32} />
+                    <Skeleton variant="text" height={24} width="40%" />
+                    <Skeleton variant="text" height={20} width="60%" />
+                  </CardContent>
+                </Card>
+              </Grid>
+            ))
+          ) : (
+            featuredProducts.slice(0, 8).map((product) => {
+              const discount = product.originalPrice && product.originalPrice > product.price 
+                ? calculateDiscount(product.originalPrice, product.price)
+                : 0;
+              
+              return (
+                <Grid item xs={12} sm={6} md={3} key={product.id}>
+                  <Card
+                    onClick={() => handleProductClick(product.id)}
                     sx={{
-                      position: 'absolute',
-                      top: 8,
-                      left: 8,
+                      cursor: 'pointer',
+                      transition: 'all 0.3s ease',
+                      '&:hover': {
+                        transform: 'translateY(-4px)',
+                        boxShadow: 4,
+                      },
                     }}
-                  />
-                </Box>
-                <CardContent>
-                  <Typography variant="h6" gutterBottom noWrap>
-                    {product.name}
-                  </Typography>
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
-                    <Typography variant="h6" color="primary.main">
-                      ₹{product.price.toLocaleString()}
-                    </Typography>
-                    <Typography
-                      variant="body2"
-                      sx={{ textDecoration: 'line-through', color: 'text.secondary' }}
-                    >
-                      ₹{product.originalPrice.toLocaleString()}
-                    </Typography>
-                  </Box>
-                  <Typography variant="body2" color="text.secondary">
-                    ⭐ {product.rating} Rating
-                  </Typography>
-                </CardContent>
-              </Card>
-            </Grid>
-          ))}
+                  >
+                    <Box sx={{ position: 'relative' }}>
+                      <CardMedia
+                        component="img"
+                        height="250"
+                        image={product.images?.[0]?.imageUrl || '/images/default-product.jpg'}
+                        alt={product.name}
+                      />
+                      {discount > 0 && (
+                        <Chip
+                          label={`${discount}% OFF`}
+                          color="secondary"
+                          size="small"
+                          sx={{
+                            position: 'absolute',
+                            top: 8,
+                            left: 8,
+                          }}
+                        />
+                      )}
+                      <Box
+                        sx={{
+                          position: 'absolute',
+                          top: 8,
+                          right: 8,
+                          display: 'flex',
+                          flexDirection: 'column',
+                          gap: 1,
+                        }}
+                      >
+                        <Button
+                          size="small"
+                          variant="contained"
+                          color="primary"
+                          sx={{ minWidth: 'auto', p: 1 }}
+                        >
+                          <FavoriteBorder fontSize="small" />
+                        </Button>
+                      </Box>
+                    </Box>
+                    <CardContent>
+                      <Typography variant="h6" gutterBottom noWrap>
+                        {product.name}
+                      </Typography>
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
+                        <Typography variant="h6" color="primary.main">
+                          {formatPrice(product.price)}
+                        </Typography>
+                        {product.originalPrice && product.originalPrice > product.price && (
+                          <Typography
+                            variant="body2"
+                            sx={{ textDecoration: 'line-through', color: 'text.secondary' }}
+                          >
+                            {formatPrice(product.originalPrice)}
+                          </Typography>
+                        )}
+                      </Box>
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
+                        <Rating value={product.averageRating || 0} precision={0.1} size="small" readOnly />
+                        <Typography variant="body2" color="text.secondary">
+                          ({product.reviewCount || 0} reviews)
+                        </Typography>
+                      </Box>
+                      <Button
+                        fullWidth
+                        variant="contained"
+                        startIcon={<ShoppingCart />}
+                        size="small"
+                      >
+                        Add to Cart
+                      </Button>
+                    </CardContent>
+                  </Card>
+                </Grid>
+              );
+            })
+          )}
         </Grid>
 
         {/* Call to Action */}

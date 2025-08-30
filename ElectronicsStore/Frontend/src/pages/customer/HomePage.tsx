@@ -206,7 +206,7 @@ const HomePage: React.FC = () => {
               </Grid>
             ))
           ) : (
-            categories.slice(0, 4).map((category) => (
+            categories?.slice(0, 4).map((category) => (
               <Grid item xs={12} sm={6} md={3} key={category.id}>
                 <Card
                   onClick={() => handleCategoryClick(category.id)}
@@ -258,7 +258,7 @@ const HomePage: React.FC = () => {
               </Grid>
             ))
           ) : (
-            featuredProducts.slice(0, 8).map((product) => {
+            featuredProducts?.slice(0, 8).map((product) => {
               const discount = product.discountPrice && product.discountPrice > product.price 
                 ? calculateDiscount(product.discountPrice, product.price)
                 : 0;

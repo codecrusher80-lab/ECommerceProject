@@ -163,7 +163,7 @@ const ProfilePage: React.FC = () => {
 
   const handleProfileUpdate = async () => {
     try {
-      await dispatch(updateUserProfile(profileData)).unwrap();
+      await dispatch(updateUserProfile(profileData));
       setEditing(false);
       setSuccess('Profile updated successfully!');
       setTimeout(() => setSuccess(null), 5000);

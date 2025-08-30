@@ -87,9 +87,11 @@ const AdminProductsPage: React.FC = () => {
     }
 
     dispatch(fetchProducts({
-      pagination: { page: page + 1, pageSize: rowsPerPage },
+      pagination: {
+        pageNumber: page + 1, pageSize: rowsPerPage,
+        sortDescending: false
+      },
       filter: {
-        searchTerm,
         categoryId: categoryFilter ? parseInt(categoryFilter) : undefined,
         brandId: brandFilter ? parseInt(brandFilter) : undefined,
       }
@@ -147,7 +149,10 @@ const AdminProductsPage: React.FC = () => {
       handleMenuClose();
       // Refresh products
       dispatch(fetchProducts({
-        pagination: { page: page + 1, pageSize: rowsPerPage }
+        pagination: {
+          pageNumber: page + 1, pageSize: rowsPerPage,
+          sortDescending: false
+        }
       }));
     } catch (error) {
       toast.error('Failed to delete product');
@@ -225,7 +230,7 @@ const AdminProductsPage: React.FC = () => {
                   label="Category"
                 >
                   <MenuItem value="">All Categories</MenuItem>
-                  {categories.map((category) => (
+                  {categories?.map((category) => (
                     <MenuItem key={category.id} value={category.id.toString()}>
                       {category.name}
                     </MenuItem>
@@ -242,7 +247,7 @@ const AdminProductsPage: React.FC = () => {
                   label="Brand"
                 >
                   <MenuItem value="">All Brands</MenuItem>
-                  {brands.map((brand) => (
+                  {brands?.map((brand) => (
                     <MenuItem key={brand.id} value={brand.id.toString()}>
                       {brand.name}
                     </MenuItem>
@@ -362,9 +367,9 @@ const AdminProductsPage: React.FC = () => {
                       <Typography variant="subtitle2">
                         {formatPrice(product.price)}
                       </Typography>
-                      {product.originalPrice && product.originalPrice > product.price && (
+                      {product.discountPrice && product.discountPrice > product.price && (
                         <Typography variant="body2" color="text.secondary" sx={{ textDecoration: 'line-through' }}>
-                          {formatPrice(product.originalPrice)}
+                          {formatPrice(product.discountPrice)}
                         </Typography>
                       )}
                     </TableCell>

@@ -5,7 +5,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Hangfire;
 using Hangfire.Dashboard;
-using Hangfire.Storage.SQLite;
+using Hangfire.SqlServer;
 using Microsoft.AspNetCore.SignalR;
 using ElectronicsStore.Infrastructure.Data;
 using ElectronicsStore.Core.Entities;
@@ -28,7 +28,7 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
     throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlite(connectionString));
+    options.UseSqlServer(connectionString));
 
 // Identity Configuration
 builder.Services.AddIdentity<User, IdentityRole>(options =>
@@ -92,7 +92,14 @@ builder.Services.AddHangfire(configuration => configuration
     .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
     .UseSimpleAssemblyNameTypeSerializer()
     .UseRecommendedSerializerSettings()
-    .UseSQLiteStorage(connectionString));
+    .UseSqlServerStorage(connectionString, new SqlServerStorageOptions
+    {
+        CommandBatchMaxTimeout = TimeSpan.FromMinutes(5),
+        SlidingInvisibilityTimeout = TimeSpan.FromMinutes(5),
+        QueuePollInterval = TimeSpan.Zero,
+        UseRecommendedIsolationLevel = true,
+        DisableGlobalLocks = true
+    }));
 
 builder.Services.AddHangfireServer();
 

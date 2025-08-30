@@ -64,8 +64,8 @@ namespace ElectronicsStore.API.Extensions
                 // Migrate database
                 await context.Database.MigrateAsync();
 
-                // Comprehensive database seeding
-                await SeedDataService.SeedDatabaseAsync(context, userManager, roleManager);
+                // Electronic Components database seeding
+                await ElectronicComponentsSeedData.SeedElectronicComponentsAsync(context, userManager, roleManager);
             }
             catch (Exception ex)
             {

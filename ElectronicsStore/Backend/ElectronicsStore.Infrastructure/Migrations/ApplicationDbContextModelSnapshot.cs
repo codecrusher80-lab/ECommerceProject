@@ -1458,7 +1458,7 @@ namespace ElectronicsStore.Infrastructure.Migrations
                     b.HasOne("ElectronicsStore.Core.Entities.User", "User")
                         .WithMany("Addresses")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("User");
@@ -1536,12 +1536,12 @@ namespace ElectronicsStore.Infrastructure.Migrations
                     b.HasOne("ElectronicsStore.Core.Entities.Address", "Address")
                         .WithMany("Orders")
                         .HasForeignKey("AddressId")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("ElectronicsStore.Core.Entities.Address", "BillingAddress")
                         .WithMany()
                         .HasForeignKey("BillingAddressId")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("ElectronicsStore.Core.Entities.Coupon", "Coupon")
                         .WithMany("Orders")
@@ -1551,7 +1551,7 @@ namespace ElectronicsStore.Infrastructure.Migrations
                     b.HasOne("ElectronicsStore.Core.Entities.Address", "ShippingAddress")
                         .WithMany()
                         .HasForeignKey("ShippingAddressId")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("ElectronicsStore.Core.Entities.User", "User")
                         .WithMany("Orders")

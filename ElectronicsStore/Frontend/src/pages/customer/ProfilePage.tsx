@@ -91,7 +91,7 @@ function TabPanel(props: TabPanelProps) {
 const ProfilePage: React.FC = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const { user, isAuthenticated, loading } = useAppSelector(state => state.auth);
+  const { user, isAuthenticated, isLoading } = useAppSelector(state => state.auth);
   
   const [activeTab, setActiveTab] = useState(0);
   const [editing, setEditing] = useState(false);
@@ -319,7 +319,7 @@ const ProfilePage: React.FC = () => {
                           variant="contained"
                           startIcon={<Save />}
                           onClick={handleProfileUpdate}
-                          disabled={loading}
+                          disabled={isLoading}
                         >
                           Save
                         </Button>

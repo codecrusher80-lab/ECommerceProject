@@ -11,12 +11,12 @@ import {
 } from '../thunks/productThunks';
 
 interface ProductState {
-  products: PagedResult<Product> | null;
-  featuredProducts: Product[];
-  categories: Category[];
-  brands: Brand[];
-  currentProduct: Product | null;
-  relatedProducts: Product[];
+  products: PagedResult<Product> | null | undefined;
+  featuredProducts: Product[] | null | undefined;
+  categories: Category[] | undefined;
+  brands: Brand[] | undefined;
+  currentProduct: Product | null| undefined;
+  relatedProducts: Product[] | undefined;
   filters: ProductFilter;
   isLoading: boolean;
   isFeaturedLoading: boolean;

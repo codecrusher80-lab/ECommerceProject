@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
 import {
   Container,
   Grid,
@@ -12,7 +11,6 @@ import {
   Rating,
   Chip,
   Divider,
-  TextField,
   Tab,
   Tabs,
   IconButton,
@@ -20,6 +18,9 @@ import {
   Alert,
   Breadcrumbs,
   Link,
+  Stack,
+  CardContent,
+  CardActions
 } from '@mui/material';
 import {
   ShoppingCart,
@@ -31,11 +32,13 @@ import {
   LocalShipping,
   Security,
   Replay,
+  ArrowBack
 } from '@mui/icons-material';
-import { AppDispatch, RootState } from '../../store/store';
-import { fetchProductById, fetchRelatedProducts } from '../../store/thunks/productThunks';
-import { addToCart } from '../../store/thunks/cartThunks';
-import { toast } from 'react-toastify';
+import { useAppDispatch, useAppSelector } from '../../hooks/redux';
+import { fetchProductById } from '../../store/thunks/productThunks';
+import { addToCart } from '../../store/slices/cartSlice';
+import { addToWishlist, removeFromWishlist } from '../../store/slices/wishlistSlice';
+import { Product } from '../../types';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -61,32 +64,44 @@ function TabPanel(props: TabPanelProps) {
 const ProductDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const dispatch = useDispatch<AppDispatch>();
+  const dispatch = useAppDispatch();
   
   const { 
-    currentProduct, 
-    relatedProducts, 
-    isProductLoading, 
+    products: products,
+    isLoading,
     error 
-  } = useSelector((state: RootState) => state.products);
+  } = useAppSelector((state) => state.products);
   
-  const { isAddingToCart } = useSelector((state: RootState) => state.cart);
-  const { isAuthenticated } = useSelector((state: RootState) => state.auth);
+  const { items: cartItems } = useAppSelector((state) => state.cart);
+  const { items: wishlistItems } = useAppSelector((state) => state.wishlist);
+  const { isAuthenticated } = useAppSelector((state) => state.auth);
 
+  const [currentProduct, setCurrentProduct] = useState<Product | null>(null);
+  const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const [tabValue, setTabValue] = useState(0);
-  const [isWishlisted, setIsWishlisted] = useState(false);
 
   useEffect(() => {
     if (id) {
       const productId = parseInt(id);
-      dispatch(fetchProductById(productId));
-      dispatch(fetchRelatedProducts(productId));
+      const product = products?.find(p => p.id === productId);
+      if (product) {
+        setCurrentProduct(product);
+        // Get related products from same category
+        const related = products.filter(p => 
+          p.id !== productId && 
+          p.category.id === product.category.id
+        ).slice(0, 4);
+        setRelatedProducts(related);
+      } else {
+        // Try to fetch if not in store
+        dispatch(fetchProductById(productId));
+      }
     }
-  }, [dispatch, id]);
+  }, [dispatch, id, products]);
 
-  const handleAddToCart = async () => {
+  const handleAddToCart = () => {
     if (!isAuthenticated) {
       navigate('/login');
       return;
@@ -94,12 +109,31 @@ const ProductDetailPage: React.FC = () => {
 
     if (!currentProduct) return;
 
-    try {
-      await dispatch(addToCart({ productId: currentProduct.id, quantity })).unwrap();
-      toast.success('Product added to cart successfully!');
-    } catch (error) {
-      toast.error('Failed to add product to cart');
+    dispatch(addToCart({ productId: currentProduct.id, quantity }));
+  };
+
+  const handleWishlistToggle = () => {
+    if (!isAuthenticated) {
+      navigate('/login');
+      return;
     }
+    
+    if (!currentProduct) return;
+    
+    const isInWishlist = wishlistItems.some(item => item.productId === currentProduct.id);
+    if (isInWishlist) {
+      dispatch(removeFromWishlist(currentProduct.id));
+    } else {
+      dispatch(addToWishlist(currentProduct.id));
+    }
+  };
+
+  const isInWishlist = (productId: number) => {
+    return wishlistItems.some(item => item.productId === productId);
+  };
+
+  const isInCart = (productId: number) => {
+    return cartItems.some(item => item.productId === productId);
   };
 
   const handleQuantityChange = (change: number) => {
@@ -109,15 +143,6 @@ const ProductDetailPage: React.FC = () => {
     }
   };
 
-  const handleWishlistToggle = () => {
-    if (!isAuthenticated) {
-      navigate('/login');
-      return;
-    }
-    setIsWishlisted(!isWishlisted);
-    // TODO: Implement wishlist API call
-  };
-
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat('en-IN', {
       style: 'currency',
@@ -125,12 +150,12 @@ const ProductDetailPage: React.FC = () => {
     }).format(price);
   };
 
-  const calculateDiscount = (originalPrice: number, currentPrice: number) => {
-    const discount = ((originalPrice - currentPrice) / originalPrice) * 100;
+  const calculateDiscount = (originalPrice: number, discountPrice: number) => {
+    const discount = ((originalPrice - discountPrice) / originalPrice) * 100;
     return Math.round(discount);
   };
 
-  if (isProductLoading) {
+  if (isLoading) {
     return (
       <Container maxWidth="lg" sx={{ py: 4 }}>
         <Grid container spacing={4}>
@@ -154,7 +179,11 @@ const ProductDetailPage: React.FC = () => {
         <Alert severity="error">
           {error || 'Product not found'}
         </Alert>
-        <Button onClick={() => navigate('/products')} sx={{ mt: 2 }}>
+        <Button 
+          onClick={() => navigate('/products')} 
+          sx={{ mt: 2 }}
+          startIcon={<ArrowBack />}
+        >
           Back to Products
         </Button>
       </Container>
@@ -162,22 +191,37 @@ const ProductDetailPage: React.FC = () => {
   }
 
   const product = currentProduct;
-  const discount = product.originalPrice && product.originalPrice > product.price 
-    ? calculateDiscount(product.originalPrice, product.price)
+  const discount = product.discountPrice 
+    ? calculateDiscount(product.price, product.discountPrice)
     : 0;
 
   return (
     <Container maxWidth="lg" sx={{ py: 4 }}>
       {/* Breadcrumbs */}
       <Breadcrumbs sx={{ mb: 3 }}>
-        <Link underline="hover" color="inherit" onClick={() => navigate('/')}>
+        <Link 
+          underline="hover" 
+          color="inherit" 
+          sx={{ cursor: 'pointer' }}
+          onClick={() => navigate('/')}
+        >
           Home
         </Link>
-        <Link underline="hover" color="inherit" onClick={() => navigate('/products')}>
+        <Link 
+          underline="hover" 
+          color="inherit" 
+          sx={{ cursor: 'pointer' }}
+          onClick={() => navigate('/products')}
+        >
           Products
         </Link>
-        <Link underline="hover" color="inherit" onClick={() => navigate(`/products?category=${product.categoryId}`)}>
-          {product.category?.name}
+        <Link 
+          underline="hover" 
+          color="inherit" 
+          sx={{ cursor: 'pointer' }}
+          onClick={() => navigate(`/products?category=${product.category.id}`)}
+        >
+          {product.category.name}
         </Link>
         <Typography color="text.primary">{product.name}</Typography>
       </Breadcrumbs>
@@ -189,8 +233,9 @@ const ProductDetailPage: React.FC = () => {
             <CardMedia
               component="img"
               height="400"
-              image={product.images?.[selectedImageIndex]?.imageUrl || '/images/default-product.jpg'}
+              image={product.images?.[selectedImageIndex]?.imageUrl || '/api/placeholder/400/400'}
               alt={product.name}
+              sx={{ objectFit: 'contain', p: 2 }}
             />
           </Card>
           {product.images && product.images.length > 1 && (
@@ -210,6 +255,7 @@ const ProductDetailPage: React.FC = () => {
                       height="80"
                       image={image.imageUrl}
                       alt={`${product.name} ${index + 1}`}
+                      sx={{ objectFit: 'contain' }}
                     />
                   </Card>
                 </Grid>
@@ -226,13 +272,13 @@ const ProductDetailPage: React.FC = () => {
             </Typography>
             
             <Typography variant="subtitle1" color="text.secondary" gutterBottom>
-              by {product.brand?.name}
+              by {product.brand.name}
             </Typography>
 
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
               <Rating value={product.averageRating || 0} precision={0.1} readOnly />
               <Typography variant="body2" color="text.secondary">
-                ({product.reviewCount || 0} reviews)
+                ({product.totalReviews || 0} reviews)
               </Typography>
               {product.stockQuantity > 0 ? (
                 <Chip label="In Stock" color="success" size="small" />
@@ -243,15 +289,15 @@ const ProductDetailPage: React.FC = () => {
 
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
               <Typography variant="h4" color="primary.main">
-                {formatPrice(product.price)}
+                {formatPrice(product.discountPrice || product.price)}
               </Typography>
-              {product.originalPrice && product.originalPrice > product.price && (
+              {product.discountPrice && (
                 <>
                   <Typography
                     variant="h6"
                     sx={{ textDecoration: 'line-through', color: 'text.secondary' }}
                   >
-                    {formatPrice(product.originalPrice)}
+                    {formatPrice(product.price)}
                   </Typography>
                   <Chip label={`${discount}% OFF`} color="secondary" />
                 </>
@@ -288,17 +334,17 @@ const ProductDetailPage: React.FC = () => {
                 size="large"
                 startIcon={<ShoppingCart />}
                 onClick={handleAddToCart}
-                disabled={product.stockQuantity <= 0 || isAddingToCart}
+                disabled={product.stockQuantity <= 0}
                 sx={{ flex: 1 }}
               >
-                {isAddingToCart ? 'Adding...' : 'Add to Cart'}
+                {isInCart(product.id) ? 'In Cart' : 'Add to Cart'}
               </Button>
               <IconButton
                 onClick={handleWishlistToggle}
-                color={isWishlisted ? 'error' : 'default'}
+                color={isInWishlist(product.id) ? 'error' : 'default'}
                 sx={{ border: 1, borderColor: 'grey.300' }}
               >
-                {isWishlisted ? <Favorite /> : <FavoriteBorder />}
+                {isInWishlist(product.id) ? <Favorite /> : <FavoriteBorder />}
               </IconButton>
               <IconButton sx={{ border: 1, borderColor: 'grey.300' }}>
                 <Share />
@@ -306,11 +352,11 @@ const ProductDetailPage: React.FC = () => {
             </Box>
 
             {/* Features */}
-            <Box sx={{ display: 'flex', gap: 2, mb: 3 }}>
+            <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} sx={{ mb: 3 }}>
               <Chip icon={<LocalShipping />} label="Free Shipping" variant="outlined" />
               <Chip icon={<Security />} label="Secure Payment" variant="outlined" />
               <Chip icon={<Replay />} label="Easy Returns" variant="outlined" />
-            </Box>
+            </Stack>
 
             {/* Product Info */}
             <Card sx={{ p: 2 }}>
@@ -320,13 +366,13 @@ const ProductDetailPage: React.FC = () => {
                   <Typography variant="body2" color="text.secondary">Category:</Typography>
                 </Grid>
                 <Grid item xs={6}>
-                  <Typography variant="body2">{product.category?.name}</Typography>
+                  <Typography variant="body2">{product.category.name}</Typography>
                 </Grid>
                 <Grid item xs={6}>
                   <Typography variant="body2" color="text.secondary">Brand:</Typography>
                 </Grid>
                 <Grid item xs={6}>
-                  <Typography variant="body2">{product.brand?.name}</Typography>
+                  <Typography variant="body2">{product.brand.name}</Typography>
                 </Grid>
                 <Grid item xs={6}>
                   <Typography variant="body2" color="text.secondary">SKU:</Typography>
@@ -355,7 +401,7 @@ const ProductDetailPage: React.FC = () => {
       {/* Tabs Section */}
       <Box sx={{ width: '100%' }}>
         <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-          <Tabs value={tabValue} onChange={(e, newValue) => setTabValue(newValue)}>
+          <Tabs value={tabValue} onChange={(_, newValue) => setTabValue(newValue)}>
             <Tab label="Description" />
             <Tab label="Specifications" />
             <Tab label="Reviews" />
@@ -368,17 +414,34 @@ const ProductDetailPage: React.FC = () => {
         </TabPanel>
         <TabPanel value={tabValue} index={1}>
           <Typography variant="h6" gutterBottom>Technical Specifications</Typography>
-          {product.specifications ? (
-            <pre style={{ whiteSpace: 'pre-wrap', fontFamily: 'inherit' }}>
-              {product.specifications}
-            </pre>
+          {product.technicalSpecifications ? (
+            <Box
+              component="pre"
+              sx={{
+                whiteSpace: 'pre-wrap',
+                fontFamily: 'inherit',
+                backgroundColor: 'grey.50',
+                p: 2,
+                borderRadius: 1,
+                overflow: 'auto'
+              }}
+            >
+              {product.technicalSpecifications}
+            </Box>
           ) : (
             <Typography>No specifications available.</Typography>
           )}
         </TabPanel>
         <TabPanel value={tabValue} index={2}>
           <Typography variant="h6" gutterBottom>Customer Reviews</Typography>
-          <Typography>Reviews will be implemented here.</Typography>
+          <Box sx={{ textAlign: 'center', py: 4 }}>
+            <Typography variant="body1" color="text.secondary">
+              No reviews yet. Be the first to review this product!
+            </Typography>
+            <Button variant="outlined" sx={{ mt: 2 }}>
+              Write a Review
+            </Button>
+          </Box>
         </TabPanel>
       </Box>
 
@@ -388,26 +451,80 @@ const ProductDetailPage: React.FC = () => {
           <Divider sx={{ my: 4 }} />
           <Typography variant="h5" gutterBottom>Related Products</Typography>
           <Grid container spacing={2}>
-            {relatedProducts.slice(0, 4).map((relatedProduct) => (
+            {relatedProducts.map((relatedProduct) => (
               <Grid item xs={12} sm={6} md={3} key={relatedProduct.id}>
                 <Card
-                  sx={{ cursor: 'pointer' }}
+                  sx={{ 
+                    cursor: 'pointer',
+                    height: '100%',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    transition: 'all 0.3s ease',
+                    '&:hover': {
+                      transform: 'translateY(-4px)',
+                      boxShadow: 4
+                    }
+                  }}
                   onClick={() => navigate(`/products/${relatedProduct.id}`)}
                 >
                   <CardMedia
                     component="img"
                     height="200"
-                    image={relatedProduct.images?.[0]?.imageUrl || '/images/default-product.jpg'}
+                    image={relatedProduct.images?.[0]?.imageUrl || '/api/placeholder/300/200'}
                     alt={relatedProduct.name}
+                    sx={{ objectFit: 'contain', p: 1 }}
                   />
-                  <Box sx={{ p: 2 }}>
-                    <Typography variant="subtitle1" noWrap>
+                  <CardContent sx={{ flex: 1 }}>
+                    <Typography variant="subtitle1" gutterBottom sx={{ 
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                      display: '-webkit-box',
+                      WebkitLineClamp: 2,
+                      WebkitBoxOrient: 'vertical'
+                    }}>
                       {relatedProduct.name}
                     </Typography>
-                    <Typography variant="h6" color="primary.main">
-                      {formatPrice(relatedProduct.price)}
+                    <Typography variant="body2" color="text.secondary" gutterBottom>
+                      {relatedProduct.brand.name}
                     </Typography>
-                  </Box>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
+                      <Rating value={relatedProduct.averageRating} size="small" readOnly />
+                      <Typography variant="caption">
+                        ({relatedProduct.totalReviews})
+                      </Typography>
+                    </Box>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                      <Typography variant="h6" color="primary.main">
+                        {formatPrice(relatedProduct.discountPrice || relatedProduct.price)}
+                      </Typography>
+                      {relatedProduct.discountPrice && (
+                        <Typography
+                          variant="body2"
+                          sx={{ textDecoration: 'line-through', color: 'text.secondary' }}
+                        >
+                          {formatPrice(relatedProduct.price)}
+                        </Typography>
+                      )}
+                    </Box>
+                  </CardContent>
+                  <CardActions>
+                    <Button 
+                      size="small" 
+                      startIcon={<ShoppingCart />}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        if (isAuthenticated) {
+                          dispatch(addToCart({ productId: relatedProduct.id, quantity: 1 }));
+                        } else {
+                          navigate('/login');
+                        }
+                      }}
+                      disabled={relatedProduct.stockQuantity <= 0}
+                      fullWidth
+                    >
+                      {isInCart(relatedProduct.id) ? 'In Cart' : 'Add to Cart'}
+                    </Button>
+                  </CardActions>
                 </Card>
               </Grid>
             ))}

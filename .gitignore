@@ -287,3 +287,5 @@ FodyWeavers.xsd
 # JetBrains Rider
 *.sln.iml
 *.json
+ElectronicsStore/Backend/ElectronicsStore.API/logs/log-20250830.txt
+ElectronicsStore/Frontend/package.json

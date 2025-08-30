@@ -39,7 +39,8 @@ import {
   Search,
   FilterList,
   Refresh,
-  Download
+  Download,
+  Undo
 } from '@mui/icons-material';
 import { orderService, Order, OrderStatus, PaymentStatus } from '../../services/orderService';
 import { format } from 'date-fns';
@@ -78,10 +79,10 @@ const AdminOrdersPage: React.FC = () => {
       setLoading(true);
       const response = await orderService.getAllOrders({
         page: page + 1,
-        pageSize: rowsPerPage,
+        limit: rowsPerPage,
         ...filters
       });
-      setOrders(response.items);
+      setOrders(response.orders);
       setTotalCount(response.totalCount);
     } catch (err: any) {
       setError(err.message || 'Failed to fetch orders');
@@ -110,38 +111,50 @@ const AdminOrdersPage: React.FC = () => {
       [OrderStatus.PROCESSING]: { color: 'primary' as const, icon: <LocalShipping /> },
       [OrderStatus.SHIPPED]: { color: 'secondary' as const, icon: <LocalShipping /> },
       [OrderStatus.DELIVERED]: { color: 'success' as const, icon: <CheckCircle /> },
-      [OrderStatus.CANCELLED]: { color: 'error' as const, icon: <Cancel /> }
+      [OrderStatus.CANCELLED]: { color: 'error' as const, icon: <Cancel /> },
+      [OrderStatus.RETURNED]: { color: 'info' as const, icon: <Undo /> },  // Add the RETURNED status
+      [OrderStatus.REFUNDED]: { color: 'default' as const, icon: <Undo /> }  // Example for other statuses
     };
 
     const config = statusConfig[status];
-    return (
-      <Chip
-        label={status.replace('_', ' ')}
-        color={config.color}
-        size="small"
-        icon={config.icon}
-        sx={{ textTransform: 'capitalize' }}
-      />
-    );
-  };
+
+  // Fallback if the status does not exist in the config
+  if (!config) {
+    return <Chip label={status} color="default" />;
+  }
+
+  return (
+    <Chip
+      label={status.replace('_', ' ')}
+      color={config.color}
+      size="small"
+      icon={config.icon}
+      sx={{ textTransform: 'capitalize' }}
+    />
+  );
+};
 
   const getPaymentStatusChip = (status: PaymentStatus) => {
-    const statusConfig = {
-      [PaymentStatus.PENDING]: { color: 'warning' as const },
-      [PaymentStatus.PAID]: { color: 'success' as const },
-      [PaymentStatus.FAILED]: { color: 'error' as const },
-      [PaymentStatus.REFUNDED]: { color: 'info' as const }
-    };
-
-    return (
-      <Chip
-        label={status.replace('_', ' ')}
-        color={statusConfig[status].color}
-        size="small"
-        sx={{ textTransform: 'capitalize' }}
-      />
-    );
+  const statusConfig: Record<PaymentStatus, { color: "warning" | "success" | "error" | "info" | "secondary" }> = {
+    [PaymentStatus.PENDING]: { color: 'warning' },
+    [PaymentStatus.PAID]: { color: 'success' },
+    [PaymentStatus.FAILED]: { color: 'error' },
+    [PaymentStatus.REFUNDED]: { color: 'info' },
+    [PaymentStatus.PARTIAL_REFUND]: { color: 'secondary' }  // Correct color type here
   };
+
+  const config = statusConfig[status];
+
+  return (
+    <Chip
+      label={status.replace('_', ' ')}
+      color={config.color}  // MUI expects this to be one of the valid color options
+      size="small"
+      sx={{ textTransform: 'capitalize' }}
+    />
+  );
+};
+
 
   const handleFilterChange = (field: keyof OrderFilters, value: any) => {
     setFilters(prev => ({ ...prev, [field]: value }));

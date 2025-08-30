@@ -69,12 +69,17 @@ export interface AuthResponse {
 
 // Product Types
 export interface Product {
+  salePrice: boolean;
+  isNew: any;
+  stock: number;
+  imageUrl: string | undefined;
+  reviewCount: number;
   id: number;
   name: string;
   description?: string;
   longDescription?: string;
   price: number;
-  discountPrice?: number;
+  discountPrice: number;
   sku?: string;
   stockQuantity: number;
   isActive: boolean;
@@ -158,7 +163,7 @@ export interface CartItem {
 export interface WishlistItem {
   id: number;
   productId: number;
-  product: Product;
+  product?: Product;
   createdAt: string;
 }
 

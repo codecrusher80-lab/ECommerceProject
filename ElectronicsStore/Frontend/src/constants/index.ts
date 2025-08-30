@@ -10,6 +10,8 @@ export const ENDPOINTS = {
     CHANGE_PASSWORD: '/auth/change-password',
     CONFIRM_EMAIL: '/auth/confirm-email',
     RESEND_CONFIRMATION: '/auth/resend-confirmation',
+    REFRESH_TOKEN: '/auth/refresh-token',
+    GET_CURRENT_USER:'/auth/me'
   },
   PRODUCTS: {
     GET_ALL: '/products',

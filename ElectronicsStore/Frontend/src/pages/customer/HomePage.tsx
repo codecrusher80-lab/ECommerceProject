@@ -259,8 +259,8 @@ const HomePage: React.FC = () => {
             ))
           ) : (
             featuredProducts.slice(0, 8).map((product) => {
-              const discount = product.originalPrice && product.originalPrice > product.price 
-                ? calculateDiscount(product.originalPrice, product.price)
+              const discount = product.discountPrice && product.discountPrice > product.price 
+                ? calculateDiscount(product.discountPrice, product.price)
                 : 0;
               
               return (
@@ -323,12 +323,12 @@ const HomePage: React.FC = () => {
                         <Typography variant="h6" color="primary.main">
                           {formatPrice(product.price)}
                         </Typography>
-                        {product.originalPrice && product.originalPrice > product.price && (
+                        {product.discountPrice && product.discountPrice > product.price && (
                           <Typography
                             variant="body2"
                             sx={{ textDecoration: 'line-through', color: 'text.secondary' }}
                           >
-                            {formatPrice(product.originalPrice)}
+                            {formatPrice(product.discountPrice)}
                           </Typography>
                         )}
                       </Box>

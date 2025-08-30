@@ -1,4 +1,5 @@
 using ElectronicsStore.Core.DTOs.Common;
+using ElectronicsStore.Core.DTOs.Image;
 using ElectronicsStore.Core.Interfaces.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -21,12 +22,12 @@ namespace ElectronicsStore.API.Controllers
         /// </summary>
         [HttpPost("upload")]
         [Authorize(Roles = "Admin,Manager")]
-        public async Task<ActionResult<ApiResponse<string>>> UploadImage([FromForm] IFormFile file, [FromQuery] string folder = "products")
+        public async Task<ActionResult<ApiResponse<string>>> UploadImage([FromForm] SingleImageDto dto, [FromQuery] string folder = "products")
         {
-            if (file == null)
+            if (dto.File == null)
                 return BadRequest(ApiResponse<string>.ErrorResponse("No file provided"));
 
-            var result = await _imageService.UploadImageAsync(file, folder);
+            var result = await _imageService.UploadImageAsync(dto.File, folder);
             
             if (result.Success)
                 return Ok(result);
@@ -39,12 +40,12 @@ namespace ElectronicsStore.API.Controllers
         /// </summary>
         [HttpPost("upload-multiple")]
         [Authorize(Roles = "Admin,Manager")]
-        public async Task<ActionResult<ApiResponse<List<string>>>> UploadMultipleImages([FromForm] List<IFormFile> files, [FromQuery] string folder = "products")
+        public async Task<ActionResult<ApiResponse<List<string>>>> UploadMultipleImages([FromForm] MultipleImageDto dto, [FromQuery] string folder = "products")
         {
-            if (files == null || !files.Any())
+            if (dto.Files == null || !dto.Files.Any())
                 return BadRequest(ApiResponse<List<string>>.ErrorResponse("No files provided"));
 
-            var result = await _imageService.UploadImagesAsync(files, folder);
+            var result = await _imageService.UploadImagesAsync(dto.Files, folder);
             
             if (result.Success)
                 return Ok(result);
@@ -192,12 +193,12 @@ namespace ElectronicsStore.API.Controllers
         /// Validate image file
         /// </summary>
         [HttpPost("validate")]
-        public ActionResult<ApiResponse<bool>> ValidateImageFile([FromForm] IFormFile file)
+        public ActionResult<ApiResponse<bool>> ValidateImageFile([FromForm] SingleImageDto dto)
         {
-            if (file == null)
+            if (dto.File == null)
                 return BadRequest(ApiResponse<bool>.ErrorResponse("No file provided"));
 
-            var isValid = _imageService.IsValidImageFile(file);
+            var isValid = _imageService.IsValidImageFile(dto.File);
             
             if (isValid)
                 return Ok(ApiResponse<bool>.SuccessResponse(true, "Valid image file"));

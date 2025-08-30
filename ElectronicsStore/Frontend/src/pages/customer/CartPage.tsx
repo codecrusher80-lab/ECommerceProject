@@ -97,7 +97,7 @@ const CartPage: React.FC = () => {
 
   const calculateSavings = () => {
     return items.reduce((savings, item) => {
-      const originalPrice = item.originalPrice || item.currentPrice;
+      const originalPrice = item.priceAtTime || item.currentPrice;
       return savings + ((originalPrice - item.currentPrice) * item.quantity);
     }, 0);
   };
@@ -216,7 +216,7 @@ const CartPage: React.FC = () => {
               <CardContent>
                 <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
                   <Avatar
-                    src={item.imageUrl}
+                    src={item.productImage}
                     alt={item.productName}
                     variant="rounded"
                     sx={{ width: 100, height: 100 }}
@@ -226,25 +226,22 @@ const CartPage: React.FC = () => {
                     <Typography variant="h6" gutterBottom>
                       {item.productName}
                     </Typography>
-                    <Typography variant="body2" color="text.secondary" gutterBottom>
-                      {item.brandName}
-                    </Typography>
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 1 }}>
                       <Typography variant="h6" color="primary.main">
                         {formatPrice(item.currentPrice)}
                       </Typography>
-                      {item.originalPrice && item.originalPrice > item.currentPrice && (
+                      {item.priceAtTime && item.priceAtTime > item.currentPrice && (
                         <Typography
                           variant="body2"
                           sx={{ textDecoration: 'line-through', color: 'text.secondary' }}
                         >
-                          {formatPrice(item.originalPrice)}
+                          {formatPrice(item.priceAtTime)}
                         </Typography>
                       )}
                     </Box>
-                    {item.stockQuantity <= 5 && (
+                    {item.quantity <= 5 && (
                       <Chip 
-                        label={`Only ${item.stockQuantity} left!`} 
+                        label={`Only ${item.quantity} left!`} 
                         color="warning" 
                         size="small" 
                       />
@@ -270,7 +267,7 @@ const CartPage: React.FC = () => {
                         }}
                         inputProps={{
                           min: 1,
-                          max: item.stockQuantity,
+                          max: item.quantity,
                           style: { textAlign: 'center', width: '60px' }
                         }}
                         variant="outlined"
@@ -279,7 +276,7 @@ const CartPage: React.FC = () => {
                       <IconButton 
                         size="small"
                         onClick={() => handleQuantityUpdate(item.id, item.quantity + 1)}
-                        disabled={item.quantity >= item.stockQuantity}
+                        disabled={item.quantity >= item.quantity}
                       >
                         <Add />
                       </IconButton>

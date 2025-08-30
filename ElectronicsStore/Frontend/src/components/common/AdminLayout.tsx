@@ -34,7 +34,7 @@ import {
   Notifications,
 } from '@mui/icons-material';
 import { useSelector, useDispatch } from 'react-redux';
-import { RootState } from '../../store/store';
+import { RootState, AppDispatch } from '../../store/store';
 import { logout } from '../../store/slices/authSlice';
 
 const drawerWidth = 240;
@@ -44,7 +44,7 @@ const AdminLayout: React.FC = () => {
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const navigate = useNavigate();
   const location = useLocation();
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
 
   const { user } = useSelector((state: RootState) => state.auth);
 

@@ -1,5 +1,5 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { productService } from '../../services/productService';
+import productService  from '../../services/productService';
 import { Product, Category, Brand, ProductFilter, PaginationParams } from '../../types';
 
 // Get all products with filters and pagination

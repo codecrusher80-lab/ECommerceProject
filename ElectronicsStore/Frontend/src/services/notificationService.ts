@@ -1,4 +1,4 @@
-import { apiClient } from './apiClient';
+import apiClient from './apiClient';
 
 export interface Notification {
   id: string;
@@ -467,7 +467,7 @@ class NotificationService {
         badge: '/badge-icon.png',
         tag: notification.id,
         requireInteraction: notification.priority === NotificationPriority.URGENT
-      });
+      }as NotificationOptions & { image?: string });
 
       browserNotification.onclick = () => {
         if (notification.actionUrl) {

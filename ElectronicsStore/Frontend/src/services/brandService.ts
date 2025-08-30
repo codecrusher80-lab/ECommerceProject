@@ -1,4 +1,4 @@
-import { apiClient } from './apiClient';
+import apiClient from './apiClient';
 import { Brand, PagedResult, PaginationParams, ApiResponse } from '../types';
 
 export interface BrandFilters extends PaginationParams {

@@ -37,7 +37,7 @@ import {
   Link as LinkIcon
 } from '@mui/icons-material';
 import { Product } from '../../types';
-import { RootState } from '../../store';
+import { RootState } from '../../store/store';
 import { addToCart } from '../../store/slices/cartSlice';
 import { addToWishlist, removeFromWishlist } from '../../store/slices/wishlistSlice';
 
@@ -85,7 +85,11 @@ const ProductCard: React.FC<ProductCardProps> = ({
     dispatch(addToCart({
       productId: product.id,
       quantity: 1,
-      price: product.salePrice || product.price
+      currentPrice: product.discountPrice || product.price,
+      id: 0,
+      productName: '',
+      priceAtTime: 0,
+      createdAt: ''
     }));
   };
 
@@ -101,7 +105,9 @@ const ProductCard: React.FC<ProductCardProps> = ({
     } else {
       dispatch(addToWishlist({
         productId: product.id,
-        addedAt: new Date()
+        createdAt: new Date().toDateString(),
+        id: 0,
+        product: undefined
       }));
     }
   };
@@ -120,12 +126,12 @@ const ProductCard: React.FC<ProductCardProps> = ({
     onCompare?.(product);
   };
 
-  const handleShareClick = (e: React.MouseEvent) => {
+  const handleShareClick = (e: React.MouseEvent<HTMLElement>) => {
     e.stopPropagation();
     setShareMenuAnchor(e.currentTarget);
   };
 
-  const handleMoreClick = (e: React.MouseEvent) => {
+  const handleMoreClick = (e: React.MouseEvent<HTMLElement>) => {
     e.stopPropagation();
     setMoreMenuAnchor(e.currentTarget);
   };
@@ -159,8 +165,8 @@ const ProductCard: React.FC<ProductCardProps> = ({
   };
 
   const calculateDiscount = () => {
-    if (product.salePrice && product.price > product.salePrice) {
-      return Math.round(((product.price - product.salePrice) / product.price) * 100);
+    if (product.salePrice && product.price > product.discountPrice) {
+      return Math.round(((product.price - product.discountPrice) / product.price) * 100);
     }
     return 0;
   };
@@ -369,7 +375,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
             gutterBottom
             sx={{ fontSize: '0.75rem' }}
           >
-            {product.category}
+            {product.category.name}
           </Typography>
 
           <Typography

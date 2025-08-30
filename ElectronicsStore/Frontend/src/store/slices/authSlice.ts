@@ -18,78 +18,83 @@ const initialState: AuthState = {
   isAuthenticated: false,
 };
 
-// Async thunks
-export const login = createAsyncThunk(
+// ------------------ Async Thunks ------------------
+
+// Login
+export const login = createAsyncThunk<AuthResponse, LoginRequest>(
   'auth/login',
-  async (loginData: LoginRequest, { rejectWithValue }) => {
+  async (loginData, { rejectWithValue }) => {
     try {
       const response = await authService.login(loginData);
-      return response.data;
+      return response.data as AuthResponse;
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.message || 'Login failed');
     }
   }
 );
 
-export const register = createAsyncThunk(
+// Register
+export const register = createAsyncThunk<AuthResponse, RegisterRequest>(
   'auth/register',
-  async (registerData: RegisterRequest, { rejectWithValue }) => {
+  async (registerData, { rejectWithValue }) => {
     try {
       const response = await authService.register(registerData);
-      return response.data;
+      return response.data as AuthResponse;
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.message || 'Registration failed');
     }
   }
 );
 
-export const logout = createAsyncThunk(
+// Logout
+export const logout = createAsyncThunk<void>(
   'auth/logout',
   async (_, { rejectWithValue }) => {
     try {
       await authService.logout();
-      return null;
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.message || 'Logout failed');
     }
   }
 );
 
-export const changePassword = createAsyncThunk(
+// Change Password
+export const changePassword = createAsyncThunk<void, { currentPassword: string; newPassword: string }>(
   'auth/changePassword',
-  async (passwordData: { currentPassword: string; newPassword: string }, { rejectWithValue }) => {
+  async (passwordData, { rejectWithValue }) => {
     try {
       await authService.changePassword(passwordData);
-      return null;
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.message || 'Password change failed');
     }
   }
 );
 
-export const forgotPassword = createAsyncThunk(
+// Forgot Password
+export const forgotPassword = createAsyncThunk<void, string>(
   'auth/forgotPassword',
-  async (email: string, { rejectWithValue }) => {
+  async (email, { rejectWithValue }) => {
     try {
       await authService.forgotPassword(email);
-      return null;
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.message || 'Failed to send reset email');
     }
   }
 );
 
-export const resetPassword = createAsyncThunk(
+// Reset Password
+export const resetPassword = createAsyncThunk<void, { email: string; token: string; newPassword: string }>(
   'auth/resetPassword',
-  async (resetData: { email: string; token: string; newPassword: string }, { rejectWithValue }) => {
+  async (resetData, { rejectWithValue }) => {
     try {
       await authService.resetPassword(resetData);
-      return null;
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.message || 'Password reset failed');
     }
   }
 );
+
+// ------------------ Slice ------------------
 
 const authSlice = createSlice({
   name: 'auth',
@@ -122,7 +127,7 @@ const authSlice = createSlice({
         state.isLoading = true;
         state.error = null;
       })
-      .addCase(login.fulfilled, (state, action: PayloadAction<AuthResponse>) => {
+      .addCase(login.fulfilled, (state, action) => {
         state.isLoading = false;
         state.user = {
           userId: action.payload.userId,
@@ -142,13 +147,13 @@ const authSlice = createSlice({
         state.error = action.payload as string;
         state.isAuthenticated = false;
       })
-      
+
       // Register
       .addCase(register.pending, (state) => {
         state.isLoading = true;
         state.error = null;
       })
-      .addCase(register.fulfilled, (state, action: PayloadAction<AuthResponse>) => {
+      .addCase(register.fulfilled, (state, action) => {
         state.isLoading = false;
         state.user = {
           userId: action.payload.userId,
@@ -168,7 +173,7 @@ const authSlice = createSlice({
         state.error = action.payload as string;
         state.isAuthenticated = false;
       })
-      
+
       // Logout
       .addCase(logout.pending, (state) => {
         state.isLoading = true;
@@ -183,12 +188,12 @@ const authSlice = createSlice({
       .addCase(logout.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload as string;
-        // Still clear auth data even if logout failed
+        // Clear auth data even if logout failed
         state.user = null;
         state.token = null;
         state.isAuthenticated = false;
       })
-      
+
       // Change Password
       .addCase(changePassword.pending, (state) => {
         state.isLoading = true;
@@ -202,7 +207,7 @@ const authSlice = createSlice({
         state.isLoading = false;
         state.error = action.payload as string;
       })
-      
+
       // Forgot Password
       .addCase(forgotPassword.pending, (state) => {
         state.isLoading = true;
@@ -216,7 +221,7 @@ const authSlice = createSlice({
         state.isLoading = false;
         state.error = action.payload as string;
       })
-      
+
       // Reset Password
       .addCase(resetPassword.pending, (state) => {
         state.isLoading = true;

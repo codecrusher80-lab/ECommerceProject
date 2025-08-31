@@ -16,7 +16,6 @@ import {
   IconButton,
   InputAdornment,
   Grid,
-  Checkbox,
 } from '@mui/material';
 import {
   Visibility,
@@ -35,7 +34,6 @@ const validationSchema = Yup.object({
   password: Yup.string()
     .min(6, 'Password must be at least 6 characters')
     .required('Password is required'),
-  rememberMe: Yup.boolean(), // Add rememberMe to validation schema
 });
 
 const LoginPage: React.FC = () => {
@@ -59,7 +57,6 @@ const LoginPage: React.FC = () => {
     initialValues: {
       email: '',
       password: '',
-      rememberMe: false, // Add this field to initialValues
     },
     validationSchema,
     onSubmit: async (values) => {
@@ -81,13 +78,11 @@ const LoginPage: React.FC = () => {
       formik.setValues({
         email: 'admin@electronicsstore.com',
         password: 'Admin@123',
-        rememberMe: false, // Make sure to set rememberMe
       });
     } else {
       formik.setValues({
         email: 'customer@electronicsstore.com',
         password: 'Customer@123',
-        rememberMe: false, // Make sure to set rememberMe
       });
     }
   };
@@ -168,19 +163,6 @@ const LoginPage: React.FC = () => {
               ),
             }}
           />
-
-          {/* Remember Me checkbox */}
-          <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-            <Checkbox
-              name="rememberMe"
-              checked={formik.values.rememberMe}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-            />
-            <Typography variant="body2" color="text.secondary">
-              Remember Me
-            </Typography>
-          </Box>
 
           <Button
             type="submit"

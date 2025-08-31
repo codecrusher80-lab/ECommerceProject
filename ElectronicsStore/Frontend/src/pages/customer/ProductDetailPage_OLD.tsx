@@ -78,9 +78,11 @@ const ProductDetailPage: React.FC = () => {
 
   const [currentProduct, setCurrentProduct] = useState<Product | null>(null);
   const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
+
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const [tabValue, setTabValue] = useState(0);
+  const [isWishlisted, setIsWishlisted] = useState(false);
 
   useEffect(() => {
     if (id) {
@@ -112,6 +114,13 @@ const ProductDetailPage: React.FC = () => {
     dispatch(addToCart({ productId: currentProduct.id, quantity }));
   };
 
+  const handleQuantityChange = (change: number) => {
+    const newQuantity = quantity + change;
+    if (newQuantity >= 1 && newQuantity <= (currentProduct?.stockQuantity || 1)) {
+      setQuantity(newQuantity);
+    }
+  };
+
   const handleWishlistToggle = () => {
     if (!isAuthenticated) {
       navigate('/login');
@@ -134,13 +143,6 @@ const ProductDetailPage: React.FC = () => {
 
   const isInCart = (productId: number) => {
     return cartItems.some(item => item.productId === productId);
-  };
-
-  const handleQuantityChange = (change: number) => {
-    const newQuantity = quantity + change;
-    if (newQuantity >= 1 && newQuantity <= (currentProduct?.stockQuantity || 1)) {
-      setQuantity(newQuantity);
-    }
   };
 
   const formatPrice = (price: number) => {
@@ -179,6 +181,20 @@ const ProductDetailPage: React.FC = () => {
         <Alert severity="error">
           {error || 'Product not found'}
         </Alert>
+        <Button onClick={() => navigate('/products')} sx={{ mt: 2 }}>
+          Back to Products
+        </Button>
+      </Container>
+    );
+  }
+
+  const product = currentProduct;
+  if (!product) {
+    return (
+      <Container maxWidth="lg" sx={{ py: 4 }}>
+        <Alert severity="error">
+          Product not found
+        </Alert>
         <Button 
           onClick={() => navigate('/products')} 
           sx={{ mt: 2 }}
@@ -190,7 +206,6 @@ const ProductDetailPage: React.FC = () => {
     );
   }
 
-  const product = currentProduct;
   const discount = product.discountPrice 
     ? calculateDiscount(product.price, product.discountPrice)
     : 0;
@@ -199,28 +214,13 @@ const ProductDetailPage: React.FC = () => {
     <Container maxWidth="lg" sx={{ py: 4 }}>
       {/* Breadcrumbs */}
       <Breadcrumbs sx={{ mb: 3 }}>
-        <Link 
-          underline="hover" 
-          color="inherit" 
-          sx={{ cursor: 'pointer' }}
-          onClick={() => navigate('/')}
-        >
+        <Link underline="hover" color="inherit" onClick={() => navigate('/')}>
           Home
         </Link>
-        <Link 
-          underline="hover" 
-          color="inherit" 
-          sx={{ cursor: 'pointer' }}
-          onClick={() => navigate('/products')}
-        >
+        <Link underline="hover" color="inherit" onClick={() => navigate('/products')}>
           Products
         </Link>
-        <Link 
-          underline="hover" 
-          color="inherit" 
-          sx={{ cursor: 'pointer' }}
-          onClick={() => navigate(`/products?category=${product.category.id}`)}
-        >
+        <Link underline="hover" color="inherit" onClick={() => navigate(`/products?category=${product.category.id}`)}>
           {product.category.name}
         </Link>
         <Typography color="text.primary">{product.name}</Typography>
@@ -233,9 +233,8 @@ const ProductDetailPage: React.FC = () => {
             <CardMedia
               component="img"
               height="400"
-              image={product.images?.[selectedImageIndex]?.imageUrl || '/api/placeholder/400/400'}
+              image={product.images?.[selectedImageIndex]?.imageUrl || '/images/default-product.jpg'}
               alt={product.name}
-              sx={{ objectFit: 'contain', p: 2 }}
             />
           </Card>
           {product.images && product.images.length > 1 && (
@@ -255,7 +254,6 @@ const ProductDetailPage: React.FC = () => {
                       height="80"
                       image={image.imageUrl}
                       alt={`${product.name} ${index + 1}`}
-                      sx={{ objectFit: 'contain' }}
                     />
                   </Card>
                 </Grid>
@@ -352,11 +350,11 @@ const ProductDetailPage: React.FC = () => {
             </Box>
 
             {/* Features */}
-            <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} sx={{ mb: 3 }}>
+            <Box sx={{ display: 'flex', gap: 2, mb: 3 }}>
               <Chip icon={<LocalShipping />} label="Free Shipping" variant="outlined" />
               <Chip icon={<Security />} label="Secure Payment" variant="outlined" />
               <Chip icon={<Replay />} label="Easy Returns" variant="outlined" />
-            </Stack>
+            </Box>
 
             {/* Product Info */}
             <Card sx={{ p: 2 }}>
@@ -401,7 +399,7 @@ const ProductDetailPage: React.FC = () => {
       {/* Tabs Section */}
       <Box sx={{ width: '100%' }}>
         <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-          <Tabs value={tabValue} onChange={(_, newValue) => setTabValue(newValue)}>
+          <Tabs value={tabValue} onChange={(e, newValue) => setTabValue(newValue)}>
             <Tab label="Description" />
             <Tab label="Specifications" />
             <Tab label="Reviews" />
@@ -415,33 +413,16 @@ const ProductDetailPage: React.FC = () => {
         <TabPanel value={tabValue} index={1}>
           <Typography variant="h6" gutterBottom>Technical Specifications</Typography>
           {product.technicalSpecifications ? (
-            <Box
-              component="pre"
-              sx={{
-                whiteSpace: 'pre-wrap',
-                fontFamily: 'inherit',
-                backgroundColor: 'grey.50',
-                p: 2,
-                borderRadius: 1,
-                overflow: 'auto'
-              }}
-            >
+            <pre style={{ whiteSpace: 'pre-wrap', fontFamily: 'inherit' }}>
               {product.technicalSpecifications}
-            </Box>
+            </pre>
           ) : (
             <Typography>No specifications available.</Typography>
           )}
         </TabPanel>
         <TabPanel value={tabValue} index={2}>
           <Typography variant="h6" gutterBottom>Customer Reviews</Typography>
-          <Box sx={{ textAlign: 'center', py: 4 }}>
-            <Typography variant="body1" color="text.secondary">
-              No reviews yet. Be the first to review this product!
-            </Typography>
-            <Button variant="outlined" sx={{ mt: 2 }}>
-              Write a Review
-            </Button>
-          </Box>
+          <Typography>Reviews will be implemented here.</Typography>
         </TabPanel>
       </Box>
 
@@ -451,7 +432,7 @@ const ProductDetailPage: React.FC = () => {
           <Divider sx={{ my: 4 }} />
           <Typography variant="h5" gutterBottom>Related Products</Typography>
           <Grid container spacing={2}>
-            {relatedProducts.map((relatedProduct) => (
+            {relatedProducts.slice(0, 4).map((relatedProduct) => (
               <Grid item xs={12} sm={6} md={3} key={relatedProduct.id}>
                 <Card
                   sx={{ 
@@ -459,7 +440,6 @@ const ProductDetailPage: React.FC = () => {
                     height: '100%',
                     display: 'flex',
                     flexDirection: 'column',
-                    transition: 'all 0.3s ease',
                     '&:hover': {
                       transform: 'translateY(-4px)',
                       boxShadow: 4
@@ -475,24 +455,12 @@ const ProductDetailPage: React.FC = () => {
                     sx={{ objectFit: 'contain', p: 1 }}
                   />
                   <CardContent sx={{ flex: 1 }}>
-                    <Typography variant="subtitle1" gutterBottom sx={{ 
-                      overflow: 'hidden',
-                      textOverflow: 'ellipsis',
-                      display: '-webkit-box',
-                      WebkitLineClamp: 2,
-                      WebkitBoxOrient: 'vertical'
-                    }}>
+                    <Typography variant="subtitle1" noWrap gutterBottom>
                       {relatedProduct.name}
                     </Typography>
                     <Typography variant="body2" color="text.secondary" gutterBottom>
                       {relatedProduct.brand.name}
                     </Typography>
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
-                      <Rating value={relatedProduct.averageRating} size="small" readOnly />
-                      <Typography variant="caption">
-                        ({relatedProduct.totalReviews})
-                      </Typography>
-                    </Box>
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                       <Typography variant="h6" color="primary.main">
                         {formatPrice(relatedProduct.discountPrice || relatedProduct.price)}
@@ -513,14 +481,9 @@ const ProductDetailPage: React.FC = () => {
                       startIcon={<ShoppingCart />}
                       onClick={(e) => {
                         e.stopPropagation();
-                        if (isAuthenticated) {
-                          dispatch(addToCart({ productId: relatedProduct.id, quantity: 1 }));
-                        } else {
-                          navigate('/login');
-                        }
+                        dispatch(addToCart({ productId: relatedProduct.id, quantity: 1 }));
                       }}
                       disabled={relatedProduct.stockQuantity <= 0}
-                      fullWidth
                     >
                       {isInCart(relatedProduct.id) ? 'In Cart' : 'Add to Cart'}
                     </Button>

@@ -91,7 +91,7 @@ function TabPanel(props: TabPanelProps) {
 const ProfilePage: React.FC = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const { user, isAuthenticated, isLoading } = useAppSelector(state => state.auth);
+  const { user, isAuthenticated, loading } = useAppSelector(state => state.auth);
   
   const [activeTab, setActiveTab] = useState(0);
   const [editing, setEditing] = useState(false);
@@ -163,7 +163,7 @@ const ProfilePage: React.FC = () => {
 
   const handleProfileUpdate = async () => {
     try {
-      await dispatch(updateUserProfile(profileData));
+      await dispatch(updateUserProfile(profileData)).unwrap();
       setEditing(false);
       setSuccess('Profile updated successfully!');
       setTimeout(() => setSuccess(null), 5000);
@@ -319,7 +319,7 @@ const ProfilePage: React.FC = () => {
                           variant="contained"
                           startIcon={<Save />}
                           onClick={handleProfileUpdate}
-                          disabled={isLoading}
+                          disabled={loading}
                         >
                           Save
                         </Button>

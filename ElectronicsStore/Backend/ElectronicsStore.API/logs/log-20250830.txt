@@ -91,29 +91,3 @@
 2025-08-30 16:52:28.409 +05:30 [INF] Server shree-pc:19352:5a3802d6 is starting the registered dispatchers: ServerWatchdog, ServerJobCancellationWatcher, ExpirationManager, CountersAggregator, SqlServerHeartbeatProcess, Worker, DelayedJobScheduler, RecurringJobScheduler...
 2025-08-30 16:52:28.437 +05:30 [INF] 1 servers were removed due to timeout
 2025-08-30 16:52:28.502 +05:30 [INF] Server shree-pc:19352:5a3802d6 all the dispatchers started
-2025-08-30 16:53:25.723 +05:30 [INF] Start installing Hangfire SQL objects...
-2025-08-30 16:53:26.092 +05:30 [INF] Hangfire SQL objects installed.
-2025-08-30 16:53:26.865 +05:30 [WRN] Entity 'Review' has a global query filter defined and is the required end of a relationship with the entity 'ReviewHelpful'. This may lead to unexpected results when the required entity is filtered out. Either configure the navigation as optional, or define matching query filters for both entities in the navigation. See https://go.microsoft.com/fwlink/?linkid=2131316 for more information.
-2025-08-30 16:53:26.890 +05:30 [WRN] The foreign key property 'OrderStatusHistory.OrderId1' was created in shadow state because a conflicting property with the simple name 'OrderId' exists in the entity type, but is either not mapped, is already used for another relationship, or is incompatible with the associated primary key type. See https://aka.ms/efcore-relationships for information on mapping relationships in EF Core.
-2025-08-30 16:53:26.893 +05:30 [WRN] The foreign key property 'ProductImage.ProductId1' was created in shadow state because a conflicting property with the simple name 'ProductId' exists in the entity type, but is either not mapped, is already used for another relationship, or is incompatible with the associated primary key type. See https://aka.ms/efcore-relationships for information on mapping relationships in EF Core.
-2025-08-30 16:53:26.894 +05:30 [WRN] The foreign key property 'IdentityUserRole<string>.UserId1' was created in shadow state because a conflicting property with the simple name 'UserId' exists in the entity type, but is either not mapped, is already used for another relationship, or is incompatible with the associated primary key type. See https://aka.ms/efcore-relationships for information on mapping relationships in EF Core.
-2025-08-30 16:53:26.921 +05:30 [WRN] No store type was specified for the decimal property 'MaximumDiscountAmount' on entity type 'Coupon'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
-2025-08-30 16:53:26.924 +05:30 [WRN] No store type was specified for the decimal property 'MinimumOrderAmount' on entity type 'Coupon'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
-2025-08-30 16:53:27.643 +05:30 [INF] Starting Hangfire Server using job storage: 'SQL Server: SHREE-PC\SQLEXPRESS@ElectronicsStoreDb_Dev'
-2025-08-30 16:53:27.645 +05:30 [INF] Using the following options for SQL Server job storage: Queue poll interval: 00:00:00.
-2025-08-30 16:53:27.645 +05:30 [INF] Using the following options for Hangfire Server:
-    Worker count: 20
-    Listening queues: 'default'
-    Shutdown timeout: 00:00:15
-    Schedule polling interval: 00:00:15
-2025-08-30 16:53:27.737 +05:30 [INF] Server shree-pc:16296:55ed533c successfully announced in 72.328 ms
-2025-08-30 16:53:27.742 +05:30 [INF] Server shree-pc:16296:55ed533c is starting the registered dispatchers: ServerWatchdog, ServerJobCancellationWatcher, ExpirationManager, CountersAggregator, SqlServerHeartbeatProcess, Worker, DelayedJobScheduler, RecurringJobScheduler...
-2025-08-30 16:53:27.902 +05:30 [INF] Server shree-pc:16296:55ed533c all the dispatchers started
-2025-08-30 16:58:27.821 +05:30 [INF] 1 servers were removed due to timeout
-2025-08-30 17:11:51.359 +05:30 [WRN] Stopping the server due to DomainUnload or ProcessExit event...
-2025-08-30 17:11:51.360 +05:30 [INF] Server shree-pc:16296:55ed533c caught stopping signal...
-2025-08-30 17:11:51.373 +05:30 [INF] Server shree-pc:16296:55ed533c caught stopped signal...
-2025-08-30 17:11:51.373 +05:30 [INF] Server shree-pc:16296:55ed533c All dispatchers stopped
-2025-08-30 17:11:51.374 +05:30 [WRN] Server shree-pc:16296:55ed533c caught shutdown signal...
-2025-08-30 17:11:51.384 +05:30 [INF] Server shree-pc:16296:55ed533c successfully reported itself as stopped in 5.9593 ms
-2025-08-30 17:11:51.385 +05:30 [INF] Server shree-pc:16296:55ed533c has been stopped in total 11.929 ms

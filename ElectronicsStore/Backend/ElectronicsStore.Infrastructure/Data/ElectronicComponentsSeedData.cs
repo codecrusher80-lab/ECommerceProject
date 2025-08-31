@@ -153,6 +153,10 @@ namespace ElectronicsStore.Infrastructure.Data
             // Wait for categories and brands to be saved
             await context.SaveChangesAsync();
 
+            // Import comprehensive seed data from SQL file
+            // Note: The comprehensive_seed_data.sql file contains 600 products
+            // This method will create a subset for demonstration
+
             // Get category and brand IDs
             var passiveCategory = await context.Categories.FirstAsync(c => c.Name == "Passive Components");
             var semiconductorCategory = await context.Categories.FirstAsync(c => c.Name == "Semiconductors");

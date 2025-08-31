@@ -232,7 +232,7 @@ const ProductsPage: React.FC = () => {
                 ? Array.from({ length: 3 }).map((_, index) => (
                     <Skeleton key={index} height={40} />
                   ))
-                : categories?.map((category) => (
+                : categories.map((category) => (
                     <FormControlLabel
                       key={category.id}
                       control={
@@ -257,7 +257,7 @@ const ProductsPage: React.FC = () => {
                 ? Array.from({ length: 3 }).map((_, index) => (
                     <Skeleton key={index} height={40} />
                   ))
-                : brands?.slice(0, 10).map((brand) => (
+                : brands.slice(0, 10).map((brand) => (
                     <FormControlLabel
                       key={brand.id}
                       control={

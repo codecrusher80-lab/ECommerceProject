@@ -1,4 +1,5 @@
 import apiClient from './apiClient';
+import { OrderFilters } from '../types';
 
 export interface OrderItem {
   id: string;
@@ -121,62 +122,6 @@ export interface OrderSearchParams {
 
 class OrderService {
 
-   async getAllOrders(params: OrderSearchParams = {}): Promise<{
-    orders: Order[];
-    totalCount: number;
-    currentPage: number;
-    totalPages: number;
-  }> {
-    try {
-      const queryParams = new URLSearchParams();
-      
-      // Handle pagination and sorting params
-      if (params.page) queryParams.append('page', params.page.toString());
-      if (params.limit) queryParams.append('limit', params.limit.toString());
-      if (params.sortBy) queryParams.append('sortBy', params.sortBy);
-      if (params.sortOrder) queryParams.append('sortOrder', params.sortOrder);
-
-      // Handle filter params
-      if (params.filter) {
-        if (params.filter.status?.length) {
-          params.filter.status.forEach(status => 
-            queryParams.append('status[]', status)
-          );
-        }
-        if (params.filter.paymentStatus?.length) {
-          params.filter.paymentStatus.forEach(status => 
-            queryParams.append('paymentStatus[]', status)
-          );
-        }
-        if (params.filter.dateFrom) {
-          queryParams.append('dateFrom', params.filter.dateFrom.toISOString());
-        }
-        if (params.filter.dateTo) {
-          queryParams.append('dateTo', params.filter.dateTo.toISOString());
-        }
-        if (params.filter.minAmount) {
-          queryParams.append('minAmount', params.filter.minAmount.toString());
-        }
-        if (params.filter.maxAmount) {
-          queryParams.append('maxAmount', params.filter.maxAmount.toString());
-        }
-      }
-
-      // Perform the GET request to fetch all orders
-      const response = await apiClient.get(`/orders?${queryParams.toString()}`);
-      
-      // Map through the orders and return the transformed data
-      return {
-        orders: response.data.orders.map((order: any) => this.transformOrder(order)),
-        totalCount: response.data.totalCount,
-        currentPage: response.data.currentPage,
-        totalPages: response.data.totalPages
-      };
-    } catch (error) {
-      console.error('Error fetching all orders:', error);
-      throw new Error('Failed to fetch orders.');
-    }
-  }
 
   /**
    * Create a new order
